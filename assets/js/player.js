@@ -32,7 +32,7 @@ Crafty.c("Player",{
      
         var stage = $('#cr-stage');
         var keyDown = false; //Player didnt pressed a key
-        this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Collision,Flicker") /*Add needed Components*/
+        this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
         .multiway(this.movementSpeed, { /*Enable Movement Control*/
             UP_ARROW: -90, 
             DOWN_ARROW: 90, 
@@ -61,6 +61,28 @@ Crafty.c("Player",{
             if(e.keyCode === Crafty.keys.SPACE){
                 keyDown = false;
             } 
+        })
+        .bind("Click", function() {
+            console.log("Clicked!!");
+        })
+        .bind("canvasMouseDown", function (e) {
+            // var mouseX = e.x;
+            // var mouseY = e.y;
+            var canvas = $("#cr-stage");
+            var canvasOffsetx = canvas[0].offsetLeft;
+            var canvasOffsety = canvas[0].offsetTop;
+            // mouseX -= canvasOffsetx;
+            // mouseY -= canvasOffsety;
+            // console.log(this);
+            var vectx = e.x - this.x - this.w / 2 - canvasOffsetx;
+            var vecty = e.y - this.y - this.h / 2 - canvasOffsety;
+            console.log(Math);
+            var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
+            var dir = {x: vectx / magnitude, y: - vecty / magnitude};
+            this.shoot(dir);
+            console.log("canvasMouseDown e(" + e.x + "," + e.y + ") "
+                + "v(" + vectx + "," + vecty + ")"
+                + "dir(" + dir.x + "," + dir.y + ")");
         })
         .bind("EnterFrame",function(frame){
             if(frame.frame % this.weapon.firerate == 0){
@@ -165,17 +187,18 @@ Crafty.c("Player",{
         this.flicker = true;
         this.preparing = true;
     },
-    shoot:function(){ 
+    shoot:function(dir){ 
         if(this.preparing) return;
-        
+        var dir = dir || {x: 0, y: 1};
+
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
             x: this._x+this._w/2-bullet.w/2,
             y: this._y-this._h/2+bullet.h/2,
             rotation: this._rotation,
-            xspeed: 20 * Math.sin(this._rotation / (180 / Math.PI)),
-            yspeed: 20 * Math.cos(this._rotation / (180 / Math.PI))
+            xspeed: 20 * dir.x,
+            yspeed: 20 * dir.y
         }); 
      
         if(this.heat.current < this.heat.max)

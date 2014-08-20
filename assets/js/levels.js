@@ -128,6 +128,10 @@ Crafty.scene("Level1",function(){
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
         
     });
+    // Tell player to shoot this direction
+    Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
+            Crafty.trigger("canvasMouseDown", e);
+    });
     
     //Bind UpdateStats Event
     Crafty.bind("UpdateStats",function(){

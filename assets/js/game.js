@@ -12,7 +12,6 @@ $(function(){
     Crafty.canvas.init();
     //Set canvas under interface
     Crafty.canvas._canvas.style.zIndex = '1';
-    
     //play the loading scene
     Crafty.scene("Loading");
 });
