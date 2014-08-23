@@ -31,7 +31,7 @@ Crafty.c("Player",{
     init:function(){
      
         var stage = $('#cr-stage');
-        var keyDown = false; //Player didnt pressed a key
+        var firedThisFrame = false;
         this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
         .multiway(this.movementSpeed, { /*Enable Movement Control*/
             UP_ARROW: -90, 
@@ -53,44 +53,45 @@ Crafty.c("Player",{
           
         })
         .bind("KeyDown", function(e) {
-            if(e.keyCode === Crafty.keys.SPACE){
-                keyDown = true;
-            } 
+            if(firedThisFrame == false) {
+                this.shoot();
+                firedThisFrame = true;
+            }
+            // if(e.keyCode === Crafty.keys.SPACE){
+            //     keyDown = true;
+            // } 
         })
-        .bind("KeyUp", function(e) {
-            if(e.keyCode === Crafty.keys.SPACE){
-                keyDown = false;
-            } 
-        })
+        // .bind("KeyUp", function(e) {
+        //     if(e.keyCode === Crafty.keys.SPACE){
+        //         keyDown = false;
+        //     } 
+        // })
         .bind("Click", function() {
             console.log("Clicked!!");
         })
         .bind("canvasMouseDown", function (e) {
-            // var mouseX = e.x;
-            // var mouseY = e.y;
-            var canvas = $("#cr-stage");
-            var canvasOffsetx = canvas[0].offsetLeft;
-            var canvasOffsety = canvas[0].offsetTop;
-            // mouseX -= canvasOffsetx;
-            // mouseY -= canvasOffsety;
-            // console.log(this);
+             if(firedThisFrame == false) {
 
-            
-            var vectx = e.x - this.x - this.w / 2 - canvasOffsetx;
-            var vecty = e.y - this.y - this.h / 2 - canvasOffsety;
-            // console.log(Math);
-            var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
-            var dir = {x: vectx / magnitude, y: - vecty / magnitude};
-            this.shoot(dir);
-            // console.log("canvasMouseDown e(" + e.x + "," + e.y + ") "
-            //     + "v(" + vectx + "," + vecty + ")"
-            //     + "dir(" + dir.x + "," + dir.y + ")");
+                // get canvas for reference offsets
+                var canvas = $("#cr-stage");
+                var canvasOffsetx = canvas[0].offsetLeft;
+                var canvasOffsety = canvas[0].offsetTop;
+                // calculate direction of shot
+                var vectx = e.x - this.x - this.w / 2 - canvasOffsetx;
+                var vecty = e.y - this.y - this.h / 2 - canvasOffsety;
+                // normalize
+                var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
+                var dir = {x: vectx / magnitude, y: - vecty / magnitude};
+                // fire
+                this.shoot(dir);
+                firedThisFrame = true;
+            }
         })
         .bind("EnterFrame",function(frame){
             if(frame.frame % this.weapon.firerate == 0){
                
-                if(keyDown && !this.weapon.overheated){
-                    this.shoot();
+                if(firedThisFrame){
+                    firedThisFrame = false;
                 }else{
                     if(this.heat.current > 0) //Cooldown the weapon
                         this.heat.current = ~~(this.heat.current*29/30); 
