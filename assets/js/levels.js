@@ -174,6 +174,6 @@ Crafty.scene("Level1",function(){
             
     });
     //Play background music and repeat
-    Crafty.audio.play("space",-1);
+    // Crafty.audio.play("space",-1);
   
 });

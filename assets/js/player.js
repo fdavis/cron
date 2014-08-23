@@ -74,15 +74,17 @@ Crafty.c("Player",{
             // mouseX -= canvasOffsetx;
             // mouseY -= canvasOffsety;
             // console.log(this);
+
+            
             var vectx = e.x - this.x - this.w / 2 - canvasOffsetx;
             var vecty = e.y - this.y - this.h / 2 - canvasOffsety;
-            console.log(Math);
+            // console.log(Math);
             var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
             var dir = {x: vectx / magnitude, y: - vecty / magnitude};
             this.shoot(dir);
-            console.log("canvasMouseDown e(" + e.x + "," + e.y + ") "
-                + "v(" + vectx + "," + vecty + ")"
-                + "dir(" + dir.x + "," + dir.y + ")");
+            // console.log("canvasMouseDown e(" + e.x + "," + e.y + ") "
+            //     + "v(" + vectx + "," + vecty + ")"
+            //     + "dir(" + dir.x + "," + dir.y + ")");
         })
         .bind("EnterFrame",function(frame){
             if(frame.frame % this.weapon.firerate == 0){
@@ -190,13 +192,14 @@ Crafty.c("Player",{
     shoot:function(dir){ 
         if(this.preparing) return;
         var dir = dir || {x: 0, y: 1};
+        var myrot = Math.atan(dir.x/dir.y)/(Math.PI/180);
 
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
             x: this._x+this._w/2-bullet.w/2,
             y: this._y-this._h/2+bullet.h/2,
-            rotation: this._rotation,
+            rotation: myrot,
             xspeed: 20 * dir.x,
             yspeed: 20 * dir.y
         }); 
