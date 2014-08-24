@@ -194,8 +194,6 @@ Crafty.c("Player",{
         if(this.preparing) return;
         var dir = dir || {x: 0, y: 1};
         var myrot = Math.atan(dir.x/dir.y)/(Math.PI/180);
-        // console.log(myrot);
-        // console.log(dir);
         // don't let them shoot straight back +/- 48 degs
         if( dir.y < 0){
             if(myrot > 0 && myrot < 48) {
