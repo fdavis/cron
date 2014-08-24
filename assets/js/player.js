@@ -66,9 +66,9 @@ Crafty.c("Player",{
         //         keyDown = false;
         //     } 
         // })
-        .bind("Click", function() {
-            console.log("Clicked!!");
-        })
+        // .bind("Click", function() {
+        //     console.log("Clicked!!");
+        // })
         .bind("canvasMouseDown", function (e) {
              if(firedThisFrame == false) {
 
@@ -194,12 +194,25 @@ Crafty.c("Player",{
         if(this.preparing) return;
         var dir = dir || {x: 0, y: 1};
         var myrot = Math.atan(dir.x/dir.y)/(Math.PI/180);
+        console.log(myrot);
+        console.log(dir);
+        // don't let them shoot straight back +/- 48 degs
+        if( dir.y < 0){
+            if(myrot > 0 && myrot < 48) {
+                myrot = 48;
+                dir = {x: -0.74314482547, y: -0.66913060635};
+            } else if(myrot <= 0 && myrot > -48) {
+                myrot = -48;
+                dir = {x: 0.74314482547, y: -0.66913060635};
+            }
+        }
+
 
         var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
-            x: this._x+this._w/2-bullet.w/2,
-            y: this._y-this._h/2+bullet.h/2,
+            x: this._x+this._w/2-bullet.w/2, //helps center on ship
+            y: this._y+this._h/2-bullet.h/2,
             rotation: myrot,
             xspeed: 20 * dir.x,
             yspeed: 20 * dir.y
