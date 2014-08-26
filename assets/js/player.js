@@ -32,6 +32,8 @@ Crafty.c("Player",{
      
         var stage = $('#cr-stage');
         var firedThisFrame = false;
+        var weapon1 = {fired: false, name: 'Weapon1'}; //bound to left click
+        var weapon2 = {fired: false, name: 'MissileLauncher1'}; //bound to right click
         this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
         .multiway(this.movementSpeed, { /*Enable Movement Control*/
             UP_ARROW: -90, 
@@ -52,15 +54,15 @@ Crafty.c("Player",{
             }
           
         })
-        .bind("KeyDown", function(e) {
-            if(firedThisFrame == false) {
-                this.shoot();
-                firedThisFrame = true;
-            }
-            // if(e.keyCode === Crafty.keys.SPACE){
-            //     keyDown = true;
-            // } 
-        })
+        // .bind("KeyDown", function(e) {
+        //     if(firedThisFrame == false) {
+        //         this.shoot();
+        //         firedThisFrame = true;
+        //     }
+        //     // if(e.keyCode === Crafty.keys.SPACE){
+        //     //     keyDown = true;
+        //     // } 
+        // })
         // .bind("KeyUp", function(e) {
         //     if(e.keyCode === Crafty.keys.SPACE){
         //         keyDown = false;
@@ -70,7 +72,22 @@ Crafty.c("Player",{
         //     console.log("Clicked!!");
         // })
         .bind("canvasMouseDown", function (e) {
-             if(firedThisFrame == false) {
+            // determine our target weapon
+            if(e.mouseButton == Crafty.mouseButtons.LEFT){
+                weapon = weapon1;
+                console.log('weapon1 fire click recieved');
+            } else if (e.mouseButton == Crafty.mouseButtons.RIGHT){
+                weapon = weapon2;
+                console.log('weapon2 fire click recieved');
+            } else {
+                console.log('unused mouse button.. assuming waepon1');
+                // just debuggin should make default and remove this log
+                weapon = weapon1;
+            }
+            console.log(""+weapon);
+            console.log(""+weapon1);
+            console.log(""+firedThisFrame);
+            if(weapon.fired == false) {
 
                 // get canvas for reference offsets
                 var canvas = $("#cr-stage");
@@ -83,15 +100,17 @@ Crafty.c("Player",{
                 var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
                 var dir = {x: vectx / magnitude, y: - vecty / magnitude};
                 // fire
-                this.shoot(dir);
-                firedThisFrame = true;
+                this.shoot(dir, weapon);
+                weapon.fired = true;
             }
         })
         .bind("EnterFrame",function(frame){
             if(frame.frame % this.weapon.firerate == 0){
                
-                if(firedThisFrame){
+                if(weapon1.fired || weapon2.fired){
                     firedThisFrame = false;
+                    weapon1.fired = false;
+                    weapon2.fired = false;
                 }else{
                     if(this.heat.current > 0) //Cooldown the weapon
                         this.heat.current = ~~(this.heat.current*29/30); 
@@ -190,9 +209,12 @@ Crafty.c("Player",{
         this.flicker = true;
         this.preparing = true;
     },
-    shoot:function(dir){ 
+    shoot:function(dir, weapon){ 
+        // housekeeping and defaults
         if(this.preparing) return;
         var dir = dir || {x: 0, y: 1};
+        var weapon = weapon || this.weapon1;
+        // want bullet to face direction of travel
         var myrot = Math.atan(dir.x/dir.y)/(Math.PI/180);
         // don't let them shoot straight back +/- 48 degs
         if( dir.y < 0){
@@ -205,7 +227,7 @@ Crafty.c("Player",{
             }
         }
 
-        var bullet = Crafty.e(this.weapon.name,"PlayerBullet");
+        var bullet = Crafty.e(weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
             x: this._x+this._w/2-bullet.w/2, //helps center on ship

@@ -21,7 +21,7 @@ Crafty.c("Bullet",{
 Crafty.c("Weapon1",{
     init:function(){
         this
-        .addComponent("Bullet","missile1")
+        .addComponent("Bullet","laser1")
         .origin("center")
         .bind("EnterFrame", function() {
             this.x += this.xspeed;
@@ -33,6 +33,23 @@ Crafty.c("Weapon1",{
         Crafty.audio.play("laser1",1,0.8);
     } 
 });
+Crafty.c("MissileLauncher1",{
+    init:function(){
+        this
+        .addComponent("Bullet","missile1")
+        .origin("center")
+        .bind("EnterFrame", function() {
+            this.x += this.xspeed;
+            this.y -= this.yspeed; 
+        })
+        .attr({
+            dmg:3
+        });
+        Crafty.audio.play("laser1",1,0.8);
+    } 
+});
+
+
 Crafty.c("Weapon2",{
     init:function(){
         this
