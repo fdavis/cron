@@ -75,8 +75,12 @@ Crafty.c("Player",{
             // determine our target weapon
             if (e.mouseButton == Crafty.mouseButtons.RIGHT){
                 weapon = weapon2;
+                console.log('right' + e.button);
+                console.log(e);
             } else { // Left, middle, or others are counted as weapon 1
                 weapon = weapon1;
+                console.log('left or other' + e.button);
+                console.log(e);
             }
             if(weapon.fired == false) {
 

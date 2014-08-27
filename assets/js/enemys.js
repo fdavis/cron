@@ -74,12 +74,19 @@ Crafty.c("Asteroid",{
         var direction = Crafty.math.randomInt(-speed,speed); //Get ramdom moving direction
       
         //Asteroid requires Enemy so it gets their functions and behavior
-        this.requires("Enemy,asteroid64,SpriteAnimation")
+        this.requires("Enemy,asteroid64,Tween")
         .origin("center")
         //define animation
-        .animate("rotate",0,0,63)
+        // .animate("rotate",0,0,63)
         //start animation without end
-        .animate("rotate",15,-1)
+        // .animate("rotate",15,-1)
+        //animation rewrite craftyjs 0.6.4
+        .tween({rotation:this.rotation + 180}, 2000)
+        .bind("TweenEnd", function (){
+            console.log('tween ended, starting a new');
+            this.tween({rotation:this.rotation + 180}, 2000)
+        })
+
         .bind("EnterFrame",function(){
             //Move the Enemy in game loop
             this.y += speed;
@@ -120,10 +127,13 @@ Crafty.c("SmallAsteroid",{
     init:function(){
         var speed =  Crafty.math.randomInt(1,3);
         var direction = Crafty.math.randomInt(-speed,speed);
-        this.requires("Enemy,asteroid32,SpriteAnimation")
+        this.requires("Enemy,asteroid32,Tween")
         .origin("center")
-        .animate("rotate",0,0,63)
-        .animate("rotate",15,-1)
+        .tween({rotation:this.rotation + 180}, 2000)
+        .bind("TweenEnd", function (){
+            console.log('tween ended, starting a new');
+            this.tween({rotation:this.rotation + 180}, 2000)
+        })
         .bind("EnterFrame",function(){
             this.y += speed;
             this.x += direction;

@@ -2,11 +2,11 @@ Crafty.c("RandomExplosion",{
     init:function(){
         var rand = Crafty.math.randomInt(1,3);
         this.addComponent("2D","Canvas","explosion"+rand,"SpriteAnimation")
-        .animate("explode1",0,0,16)
-        .animate("explode2",0,1,16)
-        .animate("explode3",0,2,16)
+        .reel("explode1",500,0,0,16)
+        .reel("explode2",500,0,1,16)
+        .reel("explode3",500,0,2,16)
         
-        .animate("explode"+rand,10,0)
+        .animate("explode"+rand,0)
         .bind("AnimationEnd",function(){
             this.destroy();
         });
@@ -17,8 +17,8 @@ Crafty.c("RandomExplosion",{
 });
 Crafty.c("Damage",{
     init:function(){
-        this.addComponent("2D","Canvas","dmg")
-        .delay(function(){this.destroy()},100);
+        this.addComponent("2D","Canvas","dmg","Delay");
+        this.delay(function(){this.destroy()},100);
         
     }
 });
