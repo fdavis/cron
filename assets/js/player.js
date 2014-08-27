@@ -73,20 +73,11 @@ Crafty.c("Player",{
         // })
         .bind("canvasMouseDown", function (e) {
             // determine our target weapon
-            if(e.mouseButton == Crafty.mouseButtons.LEFT){
-                weapon = weapon1;
-                console.log('weapon1 fire click recieved');
-            } else if (e.mouseButton == Crafty.mouseButtons.RIGHT){
+            if (e.mouseButton == Crafty.mouseButtons.RIGHT){
                 weapon = weapon2;
-                console.log('weapon2 fire click recieved');
-            } else {
-                console.log('unused mouse button.. assuming waepon1');
-                // just debuggin should make default and remove this log
+            } else { // Left, middle, or others are counted as weapon 1
                 weapon = weapon1;
             }
-            console.log(""+weapon);
-            console.log(""+weapon1);
-            console.log(""+firedThisFrame);
             if(weapon.fired == false) {
 
                 // get canvas for reference offsets
@@ -215,15 +206,21 @@ Crafty.c("Player",{
         var dir = dir || {x: 0, y: 1};
         var weapon = weapon || this.weapon1;
         // want bullet to face direction of travel
-        var myrot = Math.atan(dir.x/dir.y)/(Math.PI/180);
-        // don't let them shoot straight back +/- 48 degs
+        var myrot = Math.atan(dir.x / dir.y)/(Math.PI/180);
         if( dir.y < 0){
-            if(myrot > 0 && myrot < 48) {
-                myrot = 48;
-                dir = {x: -0.74314482547, y: -0.66913060635};
-            } else if(myrot <= 0 && myrot > -48) {
-                myrot = -48;
+            // atan only defined from -90 to 90
+            if (dir.x > 0) {
+                myrot += 180;
+            } else {
+                myrot -= 180;
+            }
+            // don't let them shoot straight back +/- 48 degs 180-48=132
+            if(myrot > 132) {
+                myrot = 132;
                 dir = {x: 0.74314482547, y: -0.66913060635};
+            } else if (myrot < -132) {
+                myrot = -132;
+                dir = {x: -0.74314482547, y: -0.66913060635};
             }
         }
 
