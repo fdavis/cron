@@ -19,17 +19,22 @@ Crafty.c("Bullet",{
 });
 
 Crafty.c("Weapon1",{
+    active: false,
     init:function(){
         this
         .addComponent("Bullet","laser1")
         .origin("center")
         .bind("EnterFrame", function() {
-            this.x += this.xspeed;
-            this.y -= this.yspeed; 
+            if(this.active) {
+                this.x += this.xspeed;
+                this.y -= this.yspeed; 
+                console.log(this.x+'x'+this.y);
+            }
         })
         .attr({
             dmg:1
         });
+        console.log('weapon1 laser fired');
         Crafty.audio.play("laser1",1,0.8);
     } 
 });

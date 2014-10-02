@@ -228,14 +228,15 @@ Crafty.c("Player",{
             }
         }
 
-        var bullet = Crafty.e(weapon.name,"PlayerBullet");
-        bullet.attr({
+        var bullet = Crafty.e(weapon.name,"PlayerBullet")
+        .attr({
             playerID:this[0],
-            x: this._x+this._w/2-bullet.w/2, //helps center on ship
-            y: this._y+this._h/2-bullet.h/2,
+            x: this._x+this._w/2,//-bullet.w/2, //helps center on ship
+            y: this._y+this._h/2,//-bullet.h/2,
             rotation: myrot,
             xspeed: 20 * dir.x,
-            yspeed: 20 * dir.y
+            yspeed: 20 * dir.y,
+            active: true
         }); 
      
         if(this.heat.current < this.heat.max)
