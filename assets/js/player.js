@@ -34,13 +34,14 @@ Crafty.c("Player",{
         var firedThisFrame = false;
         var weapon1 = {fired: false, name: 'Weapon1'}; //bound to left click
         var weapon2 = {fired: false, name: 'MissileLauncher1'}; //bound to right click
-        this.requires("2D,Canvas,"+this.ship+",Multiway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
-        .multiway(this.movementSpeed, { /*Enable Movement Control*/
-            UP_ARROW: -90, 
-            DOWN_ARROW: 90, 
-            RIGHT_ARROW: 0, 
-            LEFT_ARROW: 180
-        })
+        this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
+        .fourway(10)
+        // .multiway(this.movementSpeed, { /*Enable Movement Control*/
+        //     UP_ARROW: -90, 
+        //     DOWN_ARROW: 90, 
+        //     RIGHT_ARROW: 0, 
+        //     LEFT_ARROW: 180
+        // })
         .bind('Moved', function(from) { /*Bind a function which is triggered if player is moved*/
             /*Dont allow to move the player out of Screen*/
             if(this.x+this.w > Crafty.viewport.width ||
