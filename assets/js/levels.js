@@ -82,18 +82,27 @@ Crafty.scene("Level1",function(){
     //Get the Interface elements
     var bars = {
         hp:$('#hp'),
-        heat:$('#heat'),
+        bigWeapon:$('#bigWeapon'),
+        weapon:$('#weapon'),
+        weapon2:$('#weapon2'),
+        weapon3:$('#weapon3'),
         shield:$('#shield')
     };
-    bars.hp.addClass('green');
-    bars.shield.addClass('green');
-    bars.heat.addClass('green');
+    bars.hp.addClass('red');
+    bars.shield.addClass('blue');
+    bars.bigWeapon.addClass('green');
+    bars.weapon.addClass('green');
+    bars.weapon2.addClass('green');
+    bars.weapon3.addClass('green');
     
     var infos = {
-        lives :$('.lives'),
+        lives: $('.lives'),
         score: $('.score'),
         hp:bars.hp.find('.text'),
-        heat:bars.heat.find('.text'),
+        weapon:bars.weapon.find('.text'),
+        weapon2:bars.weapon2.find('.text'),
+        weapon3:bars.weapon3.find('.text'),
+        bigWeapon:bars.bigWeapon.find('.text'),
         shield:bars.shield.find('.text'),
         alert:$('.alert')
     }
@@ -136,20 +145,33 @@ Crafty.scene("Level1",function(){
     //Bind UpdateStats Event
     Crafty.bind("UpdateStats",function(){
         //calculate percents
-        player.heat.percent = Math.round(player.heat.current/player.heat.max * 100);
         player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
         player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
-       
+        
         //display the values
-        infos.heat.text('Heat: '+player.heat.current+ '/'+player.heat.max);
+        infos.weapon.text('Weapon Charge: '+'100/100');
+        infos.weapon2.text('Weapon Charge: '+'50/100');
+        infos.weapon3.text('Weapon Charge: '+'30/100');
+        infos.bigWeapon.text('Weapon Charge: '+'100/100');
         infos.hp.text('HP: '+player.hp.current+ '/'+player.hp.max);
         infos.shield.text('Shield: '+player.shield.current+ '/'+player.shield.max);
         infos.score.text("Score: "+player.score);
         infos.lives.text("Lives: "+player.lives);
         
         //Update progressbars
-        bars.heat.progressbar({
-            value:player.heat.percent
+        bars.weapon.progressbar({
+            value:100
+        });
+        bars.weapon2.progressbar({
+            value:50
+        });
+        bars.weapon3.progressbar({
+            value:30
+        });
+        // bars.weapon.css({"backgroundColor": "#eebb55"});
+        $("#weaponSlot1").css({"background-image": "url(assets/img/bar_overlay.png)"});
+        bars.bigWeapon.progressbar({
+            value:100
         });
         bars.hp.progressbar({
             value:player.hp.percent
@@ -175,5 +197,6 @@ Crafty.scene("Level1",function(){
     });
     //Play background music and repeat
     // Crafty.audio.play("space",-1);
+    Crafty.trigger("UpdateStats");
   
 });

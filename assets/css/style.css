@@ -2,10 +2,28 @@
     margin:0px;
     padding:0px;
 }
+/* set make the page dark, but still let user read links */
+body{
+    background-color:#06161a;
+    color:#d4d4f4;
+}
+a:link {
+    color: #6464ff;
+}
+a:visited {
+    color: #9e7cff;
+}
+a:hover {
+    color: #8f8fff;
+}
+a:active {
+    color: #3e3eff;
+}
+
 #cr-stage{
     position: absolute;
     left:50%;
-    margin-left:-300px;
+    margin-left:-400px;
 }
 .info{
     text-align: center;
@@ -48,7 +66,8 @@ div.text.center{
     text-align: center;
     line-height: 24px;
     font-size: 12px;
-    color:#333333;
+    font-weight: bold;
+    color:#000000;
 }
 #interface .ui-progressbar{
     background:url(../img/bars.png) top left no-repeat;
@@ -57,6 +76,13 @@ div.text.center{
 }
 #interface .left{
     left:0px;
+}
+/*allow 4 bar stack on bottom*/
+#interface .midleft{
+    left:188px;
+}
+#interface .midright{
+    right:188px;
 }
 #interface .right{
     right:0px;
@@ -76,6 +102,11 @@ div.text.center{
     height:100%;
     background:url(../img/bars.png) -0px -54px no-repeat;
 }
+#interface .blue .ui-progressbar-value{
+    display: block;
+    height:100%;
+    background:url(../img/bars.png) -0px -107px no-repeat;
+}
 .panel{
     height: 35px;
     position: absolute;
@@ -83,6 +114,14 @@ div.text.center{
 }
 .bottom{
     bottom:0px;
+}
+
+.bottom2{
+    bottom:35px;
+}
+
+.bottom3{
+    bottom:70px;
 }
 .transparent{
     background: #ffffff;

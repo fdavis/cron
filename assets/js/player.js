@@ -1,3 +1,5 @@
+            //to use the showtext
+            // Crafty.trigger("ShowText","Weapon Overheated!");
 Crafty.c("Player",{
     hp:{
         current:10,
@@ -14,13 +16,27 @@ Crafty.c("Player",{
         max:100,
         percent:0
     },
-    movementSpeed:8,
     lives:3,
     score:0,
-    weapon:{
-        firerate:5,
-        name:"Weapon1",
-        overheated:false
+    weapons:[
+                {
+                    name:"Weapon1",
+                    fired: false
+                },
+                {
+                    name:"MissileLauncher1",
+                    fired: false
+                },
+                {
+                    name:"Weapon2",
+                    fired: false
+                }
+            ],
+    currentWeapon:0,
+    maxWeapon:3,
+    bigWeapon:{
+        name:"Bomb",
+        fired: false,
     },
     powerups:{},
     ship:"ship1",
@@ -31,17 +47,8 @@ Crafty.c("Player",{
     init:function(){
      
         var stage = $('#cr-stage');
-        var firedThisFrame = false;
-        var weapon1 = {fired: false, name: 'Weapon1'}; //bound to left click
-        var weapon2 = {fired: false, name: 'MissileLauncher1'}; //bound to right click
         this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
         .fourway(10)
-        // .multiway(this.movementSpeed, { /*Enable Movement Control*/
-        //     UP_ARROW: -90, 
-        //     DOWN_ARROW: 90, 
-        //     RIGHT_ARROW: 0, 
-        //     LEFT_ARROW: 180
-        // })
         .bind('Moved', function(from) { /*Bind a function which is triggered if player is moved*/
             /*Dont allow to move the player out of Screen*/
             if(this.x+this.w > Crafty.viewport.width ||
@@ -55,15 +62,30 @@ Crafty.c("Player",{
             }
           
         })
-        // .bind("KeyDown", function(e) {
-        //     if(firedThisFrame == false) {
-        //         this.shoot();
-        //         firedThisFrame = true;
-        //     }
-        //     // if(e.keyCode === Crafty.keys.SPACE){
-        //     //     keyDown = true;
-        //     // } 
-        // })
+        .bind("KeyDown", function(e) {
+            // cycle the active weapon
+            if(e.keyCode === Crafty.keys.SHIFT){
+                this.currentWeapon++;
+                if (this.currentWeapon >= this.maxWeapon){
+                    this.currentWeapon = 0;
+                }
+            // or select active weapon
+            } else if(e.keyCode === Crafty.keys[1]){
+                this.currentWeapon = 0;
+            } else if(e.keyCode === Crafty.keys[2]){
+                this.currentWeapon = 1;
+            } else if(e.keyCode === Crafty.keys[3]){
+                this.currentWeapon = 2;
+
+            // or use the space bomb
+            } else if(e.keyCode === Crafty.keys.SPACE){
+                if(this.preparing) return;
+                if(this.bigWeapon.fired == false){
+                    this.shoot({x:0,y:1},this.bigWeapon);
+                    this.bigWeapon.fired = true;
+                }
+            }
+        })
         // .bind("KeyUp", function(e) {
         //     if(e.keyCode === Crafty.keys.SPACE){
         //         keyDown = false;
@@ -73,17 +95,8 @@ Crafty.c("Player",{
         //     console.log("Clicked!!");
         // })
         .bind("canvasMouseDown", function (e) {
-            // determine our target weapon
-            if (e.mouseButton == Crafty.mouseButtons.RIGHT){
-                weapon = weapon2;
-                console.log('right' + e.button);
-                console.log(e);
-            } else { // Left, middle, or others are counted as weapon 1
-                weapon = weapon1;
-                console.log('left or other' + e.button);
-                console.log(e);
-            }
-            if(weapon.fired == false) {
+            if(this.preparing) return;
+            if(this.weapons[this.currentWeapon].fired == false) {
 
                 // get canvas for reference offsets
                 var canvas = $("#cr-stage");
@@ -96,30 +109,11 @@ Crafty.c("Player",{
                 var magnitude = Crafty.math.distance(vectx, vecty, 0, 0);
                 var dir = {x: vectx / magnitude, y: - vecty / magnitude};
                 // fire
-                this.shoot(dir, weapon);
-                weapon.fired = true;
+                this.shoot(dir, this.weapons[this.currentWeapon]);
+                this.weapons[this.currentWeapon].fired = true;
             }
         })
         .bind("EnterFrame",function(frame){
-            if(frame.frame % this.weapon.firerate == 0){
-               
-                if(weapon1.fired || weapon2.fired){
-                    firedThisFrame = false;
-                    weapon1.fired = false;
-                    weapon2.fired = false;
-                }else{
-                    if(this.heat.current > 0) //Cooldown the weapon
-                        this.heat.current = ~~(this.heat.current*29/30); 
-                }
-
-                Crafty.trigger("UpdateStats");
-                
-                if(this.weapon.overheated && this.heat.percent < 85){
-                    this.weapon.overheated = false;
-                    Crafty.trigger("HideText");
-                }
-                    
-            }
             if(this.preparing){
                 this.y--;
                 if(this.y < Crafty.viewport.height-this.h-Crafty.viewport.height/4){
@@ -197,19 +191,22 @@ Crafty.c("Player",{
             max:100,
             percent:0
         }
+        // reset all guns fireable
+        for(var i = 0; i < this.maxWeapon; i++){
+            this.weapons[i].fired = false;
+        }
         Crafty.trigger("UpdateStats");
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-36;
+
         
         this.flicker = true;
         this.preparing = true;
     },
-    shoot:function(dir, weapon){ 
-        // housekeeping and defaults
-        if(this.preparing) return;
+    shoot:function(dir, weapon){
         var dir = dir || {x: 0, y: 1};
-        var weapon = weapon || this.weapon1;
+        var weapon = weapon || this.weapons[0];
         // want bullet to face direction of travel
         var myrot = Math.atan(dir.x / dir.y)/(Math.PI/180);
         if( dir.y < 0){
@@ -232,21 +229,19 @@ Crafty.c("Player",{
         var bullet = Crafty.e(weapon.name,"PlayerBullet");
         bullet.attr({
             playerID:this[0],
-            x: this._x+this._w/2-bullet.w/2, //helps center on ship
+            x: this._x+this._w/2-bullet.w/2, //center on ship
             y: this._y+this._h/2-bullet.h/2,
             rotation: myrot,
-            xspeed: 20 * dir.x,
-            yspeed: 20 * dir.y
-        }); 
-     
-        if(this.heat.current < this.heat.max)
-            this.heat.current ++;
-         
-        if(this.heat.current >= this.heat.max){
-            Crafty.trigger("ShowText","Weapon Overheated!");
-            this.weapon.overheated = true;
+            xspeed: bullet.speed * dir.x,
+            yspeed: bullet.speed * dir.y
+        });
+        // reset 'fired' on weapon after cooldown, so it can be fired again
+        setTimeout(this.clearFired,bullet.firerate, weapon);
+    },
+    clearFired:function(weapon){
+        if (weapon.hasOwnProperty("fired")){
+            weapon.fired = false;
         }
-           
     },
     die:function(){
         Crafty.e("RandomExplosion").attr({
@@ -261,8 +256,5 @@ Crafty.c("Player",{
         }else{
             this.reset();
         }
-        
-        
     }
-    
 });

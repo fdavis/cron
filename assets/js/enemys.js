@@ -76,14 +76,8 @@ Crafty.c("Asteroid",{
         //Asteroid requires Enemy so it gets their functions and behavior
         this.requires("Enemy,asteroid64,Tween")
         .origin("center")
-        //define animation
-        // .animate("rotate",0,0,63)
-        //start animation without end
-        // .animate("rotate",15,-1)
-        //animation rewrite craftyjs 0.6.4
         .tween({rotation:this.rotation + 180}, 2000)
         .bind("TweenEnd", function (){
-            console.log('tween ended, starting a new');
             this.tween({rotation:this.rotation + 180}, 2000)
         })
 
@@ -131,7 +125,6 @@ Crafty.c("SmallAsteroid",{
         .origin("center")
         .tween({rotation:this.rotation + 180}, 2000)
         .bind("TweenEnd", function (){
-            console.log('tween ended, starting a new');
             this.tween({rotation:this.rotation + 180}, 2000)
         })
         .bind("EnterFrame",function(){

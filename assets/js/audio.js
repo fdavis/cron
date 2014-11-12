@@ -101,6 +101,7 @@ Crafty.extend({
 
         },
         play:function(id,repeat,volume){
+            return; //TODO FIXME when you want to hear the game again ...
             if(repeat == 0 || !Crafty.support.audio || !this.sounds[id]) return;
             var s = this.sounds[id];
             s.obj.volume = volume || Crafty.audio.volume ;   
