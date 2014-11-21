@@ -1,4 +1,4 @@
-// firerate is number of milliseconds delay between shots...
+// fireinterval is the number of frames inbetween shots
 
 Crafty.c("Bullet",{
     dmg:0,

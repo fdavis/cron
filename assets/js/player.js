@@ -21,15 +21,30 @@ Crafty.c("Player",{
     weapons:[
                 {
                     name:"Weapon1",
-                    fired: false
+                    fired: false,
+                    dmg:1,
+                    speed:25,
+                    cooldownCounter:7,
+                    fireInterval:9,
+                    percent:100
                 },
                 {
                     name:"MissileLauncher1",
-                    fired: false
+                    fired: false,
+                    dmg:3,
+                    speed:10,
+                    cooldownCounter:34,
+                    fireInterval:34,
+                    percent:100
                 },
                 {
                     name:"Weapon2",
-                    fired: false
+                    fired: false,
+                    dmg:2,
+                    speed:19,
+                    cooldownCounter:22,
+                    fireInterval:22,
+                    percent:100
                 }
             ],
     currentWeapon:0,
@@ -37,6 +52,11 @@ Crafty.c("Player",{
     bigWeapon:{
         name:"Bomb",
         fired: false,
+        dmg:10,
+        speed:5,
+        cooldownCounter:120,
+        fireInterval:120,
+        percent:100
     },
     powerups:{},
     ship:"ship1",
@@ -81,8 +101,9 @@ Crafty.c("Player",{
             } else if(e.keyCode === Crafty.keys.SPACE){
                 if(this.preparing) return;
                 if(this.bigWeapon.fired == false){
-                    this.shoot({x:0,y:1},this.bigWeapon);
                     this.bigWeapon.fired = true;
+                    this.bigWeapon.cooldownCounter = 0;
+                    this.shoot({x:0,y:1},this.bigWeapon);
                 }
             }
         })
@@ -97,9 +118,11 @@ Crafty.c("Player",{
         .bind("canvasMouseDown", function (e) {
             if(this.preparing) return;
             if(this.weapons[this.currentWeapon].fired == false) {
+                this.weapons[this.currentWeapon].fired = true;
+                this.weapons[this.currentWeapon].cooldownCounter = 0;
 
                 // get canvas for reference offsets
-                var canvas = $("#cr-stage");
+                var canvas = $("#cr-stage");//FIXME use stage var?
                 var canvasOffsetx = canvas[0].offsetLeft;
                 var canvasOffsety = canvas[0].offsetTop;
                 // calculate direction of shot
@@ -110,7 +133,6 @@ Crafty.c("Player",{
                 var dir = {x: vectx / magnitude, y: - vecty / magnitude};
                 // fire
                 this.shoot(dir, this.weapons[this.currentWeapon]);
-                this.weapons[this.currentWeapon].fired = true;
             }
         })
         .bind("EnterFrame",function(frame){
@@ -122,12 +144,27 @@ Crafty.c("Player",{
                   
                 }
             }
-         
+            for(var i = 0; i < this.weapons.length; i++){
+                if(this.weapons[i].fired == true ){
+                    this.weapons[i].cooldownCounter++;
+                    if(this.weapons[i].fireInterval == this.weapons[i].cooldownCounter ){
+                        this.weapons[i].fired = false;
+                    }
+                }
+            }
+            if(this.bigWeapon.fired == true ){
+                this.bigWeapon.cooldownCounter++;
+                if(this.bigWeapon.fireInterval == this.bigWeapon.cooldownCounter ){
+                    this.bigWeapon.fired = false;
+                }
+            }
             
+            // this.fpsHandle.text = fps.getFPS();
+
         })
         .bind("Killed",function(points){
             this.score += points;
-            Crafty.trigger("UpdateStats");
+            // Crafty.trigger("UpdateStats");
         })
         .bind("Hurt",function(dmg){
             if(this.flicker) return;
@@ -150,7 +187,7 @@ Crafty.c("Player",{
             }else{
                 this.shield.current -= dmg;
             } 
-            Crafty.trigger("UpdateStats");
+            // Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })
         .onHit("EnemyBullet",function(ent){
@@ -161,14 +198,14 @@ Crafty.c("Player",{
         .bind("RestoreHP",function(val){
             if(this.hp.current < this.hp.max){
                 this.hp.current += val;
-                Crafty.trigger("UpdateStats");
+                // Crafty.trigger("UpdateStats");
             }
         
         })
         .bind("RestoreShield",function(val){
             if(this.shield.current < this.shield.max){
                 this.shield.current += val;
-                Crafty.trigger("UpdateStats");
+                // Crafty.trigger("UpdateStats");
             }  
         
         })
@@ -194,19 +231,21 @@ Crafty.c("Player",{
         // reset all guns fireable
         for(var i = 0; i < this.maxWeapon; i++){
             this.weapons[i].fired = false;
+            this.weapons[i].cooldownCounter = this.weapons[i].fireInterval;
         }
-        Crafty.trigger("UpdateStats");
+        this.bigWeapon.fired = false;
+        this.bigWeapon.cooldownCounter = this.bigWeapon.fireInterval;
+        // Crafty.trigger("UpdateStats");
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-36;
 
-        
         this.flicker = true;
         this.preparing = true;
     },
     shoot:function(dir, weapon){
         var dir = dir || {x: 0, y: 1};
-        var weapon = weapon || this.weapons[0];
+        var weapon = weapon || this.weapons[0];//FIXME need to make default do nothing
         // want bullet to face direction of travel
         var myrot = Math.atan(dir.x / dir.y)/(Math.PI/180);
         if( dir.y < 0){
@@ -226,7 +265,7 @@ Crafty.c("Player",{
             }
         }
 
-        var bullet = Crafty.e(weapon.name,"PlayerBullet");
+        var bullet = Crafty.e(weapon.name,"PlayerBullet");//FIXME call bullet constructor
         bullet.attr({
             playerID:this[0],
             x: this._x+this._w/2-bullet.w/2, //center on ship
@@ -236,7 +275,7 @@ Crafty.c("Player",{
             yspeed: bullet.speed * dir.y
         });
         // reset 'fired' on weapon after cooldown, so it can be fired again
-        setTimeout(this.clearFired,bullet.firerate, weapon);
+        // setTimeout(this.clearFired,bullet.firerate, weapon);
     },
     clearFired:function(weapon){
         if (weapon.hasOwnProperty("fired")){
@@ -249,7 +288,7 @@ Crafty.c("Player",{
             y:this.y
         });
         this.lives--;
-        Crafty.trigger("UpdateStats");
+        // Crafty.trigger("UpdateStats");
         if(this.lives <= 0){
             this.destroy();
             Crafty.trigger("GameOver",this.score);

@@ -22,6 +22,26 @@
         
         <script type="text/javascript" src="assets/js/levels.js"></script>
         <script type="text/javascript" src="assets/js/game.js"></script>
+
+        <script type="text/javascript">var fps = {
+                startTime : 0,
+                frameNumber : 0,
+                getFPS : function(){
+                    this.frameNumber++;
+                    var d = new Date().getTime(),
+                        currentTime = ( d - this.startTime ) / 1000,
+                        result = Math.floor( ( this.frameNumber / currentTime ) );
+
+                    if( currentTime > 1 ){
+                        this.startTime = new Date().getTime();
+                        this.frameNumber = 0;
+                    }
+                    return result;
+
+                    }   
+                };
+        </script>
+
         <link type="text/css" href="assets/css/style.css" rel="stylesheet" /> 
     </head>
     <body>
@@ -39,6 +59,7 @@
                 <div class="lives text left"></div>
                 <div class="level text center"></div>
                 <div class="score text right"></div>
+                <div class="fps text midright"></div>
 
                 <div class="bars bottom left" >
                     <div id="hp" ><span class="text"></span></div>

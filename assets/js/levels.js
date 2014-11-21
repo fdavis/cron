@@ -70,6 +70,10 @@ function(){
     //Display loading interface
     $('#loading').hide();
 });
+function chargeOrReady(perc){
+    if (perc == 100){ return 'Ready'}
+    return 'Charge'; 
+}
 //Level 1 Scene
 Crafty.scene("Level1",function(){
     //Display interface
@@ -98,6 +102,7 @@ Crafty.scene("Level1",function(){
     var infos = {
         lives: $('.lives'),
         score: $('.score'),
+        fps: $('.fps'),
         hp:bars.hp.find('.text'),
         weapon:bars.weapon.find('.text'),
         weapon2:bars.weapon2.find('.text'),
@@ -106,6 +111,7 @@ Crafty.scene("Level1",function(){
         shield:bars.shield.find('.text'),
         alert:$('.alert')
     }
+    var myFPS = 0;
 
    
         
@@ -135,7 +141,51 @@ Crafty.scene("Level1",function(){
         spotEnemys(frame.frame);
         //Setup Background position
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
+
+        myFPS = fps.getFPS();
+        //calculate percents
+        player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
+        player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
         
+        player.weapons[0].percent = Math.round(player.weapons[0].cooldownCounter / player.weapons[0].fireInterval * 100);
+        player.weapons[1].percent = Math.round(player.weapons[1].cooldownCounter / player.weapons[1].fireInterval * 100);
+        player.weapons[2].percent = Math.round(player.weapons[2].cooldownCounter / player.weapons[2].fireInterval * 100);
+        player.bigWeapon.percent = Math.round(player.bigWeapon.cooldownCounter / player.bigWeapon.fireInterval * 100);
+
+        //display the values
+        infos.weapon.text('Weapon 1 ' + chargeOrReady(player.weapons[0].percent) + ': '+ player.weapons[0].percent + '%');
+        infos.weapon2.text('Weapon 2 ' + chargeOrReady(player.weapons[1].percent) + ': '+ player.weapons[1].percent + '%');
+        infos.weapon3.text('Weapon 3 ' + chargeOrReady(player.weapons[2].percent) + ': '+ player.weapons[2].percent + '%');
+        infos.bigWeapon.text('Bomb ' + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
+
+        infos.hp.text('HP: ' + player.hp.current + '/' + player.hp.max);
+        infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
+        infos.score.text("Score: " + player.score);
+        infos.lives.text("Lives: " + player.lives);
+        infos.fps.text("FPS: " + myFPS);
+        
+        //Update progressbars
+        bars.weapon.progressbar({
+            value:player.weapons[0].percent
+        });
+        bars.weapon2.progressbar({
+            value:player.weapons[1].percent
+        });
+        bars.weapon3.progressbar({
+            value:player.weapons[2].percent
+        });
+        // selected weapon highlighter
+        $("#weaponSlot1").css({"background-image": "url(assets/img/bar_overlay.png)"});
+
+        bars.bigWeapon.progressbar({
+            value:player.bigWeapon.percent
+        });
+        bars.hp.progressbar({
+            value:player.hp.percent
+        });
+        bars.shield.progressbar({
+            value:player.shield.percent
+        });
     });
     // Tell player to shoot this direction
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
@@ -144,41 +194,7 @@ Crafty.scene("Level1",function(){
     
     //Bind UpdateStats Event
     Crafty.bind("UpdateStats",function(){
-        //calculate percents
-        player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
-        player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
         
-        //display the values
-        infos.weapon.text('Weapon Charge: '+'100/100');
-        infos.weapon2.text('Weapon Charge: '+'50/100');
-        infos.weapon3.text('Weapon Charge: '+'30/100');
-        infos.bigWeapon.text('Weapon Charge: '+'100/100');
-        infos.hp.text('HP: '+player.hp.current+ '/'+player.hp.max);
-        infos.shield.text('Shield: '+player.shield.current+ '/'+player.shield.max);
-        infos.score.text("Score: "+player.score);
-        infos.lives.text("Lives: "+player.lives);
-        
-        //Update progressbars
-        bars.weapon.progressbar({
-            value:100
-        });
-        bars.weapon2.progressbar({
-            value:50
-        });
-        bars.weapon3.progressbar({
-            value:30
-        });
-        // bars.weapon.css({"backgroundColor": "#eebb55"});
-        $("#weaponSlot1").css({"background-image": "url(assets/img/bar_overlay.png)"});
-        bars.bigWeapon.progressbar({
-            value:100
-        });
-        bars.hp.progressbar({
-            value:player.hp.percent
-        });
-        bars.shield.progressbar({
-            value:player.shield.percent
-        });
 
     });
     //Bind global Event Show Text
