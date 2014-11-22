@@ -5,6 +5,7 @@ var powerUps = ["Heal","Shield"];
 //Basic enemy component
 Crafty.c("Enemy",{
     playerID:null, //ID of player which has something todo with that enemy
+    splashedBy:[],//if splashed by a splash damage object, don't let it happen again
     init:function(){
         //All enemies will get same basic components
         this.requires("2D,Canvas,Collision")  
@@ -17,14 +18,22 @@ Crafty.c("Enemy",{
                 this.destroy();
             }
         })
-        //Describe behavior on getting hitted by Player Bullet
+        //Describe behavior on getting hit by Player Bullet
         .onHit("PlayerBullet",function(ent){
             var bullet = ent[0].obj;
-            this.playerID = bullet.playerID; //Which player hurted you
+            this.playerID = bullet.playerID; //Which player hurt you
             this.trigger("Hurt",bullet.dmg); //Hurt the enemy with bullet damage
             bullet.destroy(); //Destroy the bullet
         })
-        //Describe behavior on getting hitted by Player
+        //Describe behavior on getting hit by splash damage
+        .onHit("SplashDamage",function(ent){
+            var splash = ent[0].obj;
+            if(this.splashedBy.indexOf(splash[0]) == -1){
+                this.splashedBy.push(splash[0]);
+                this.trigger("Hurt",splash.dmg); //Hurt the enemy with bullet damage
+            }
+        })
+        //Describe behavior on getting hit by Player
         .onHit("Player",function(ent){
             var player = ent[0].obj;
             //Hurt the player with my hp
@@ -70,8 +79,8 @@ Crafty.c("Asteroid",{
     hp:2, //Has 2 HP
     points:5, //Give 5 points if killed
     init:function(){
-        var speed =  Crafty.math.randomInt(1,2); //get Random movin speed
-        var direction = Crafty.math.randomInt(-speed,speed); //Get ramdom moving direction
+        var speed =  Crafty.math.randomInt(1,2); //get Random moving speed
+        var direction = Crafty.math.randomInt(-speed,speed); //Get random moving direction
       
         //Asteroid requires Enemy so it gets their functions and behavior
         this.requires("Enemy,asteroid64,Tween")

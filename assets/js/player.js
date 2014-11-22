@@ -53,7 +53,7 @@ Crafty.c("Player",{
         name:"Bomb",
         fired: false,
         dmg:10,
-        speed:5,
+        speed:2,
         cooldownCounter:120,
         fireInterval:120,
         percent:100
@@ -276,11 +276,6 @@ Crafty.c("Player",{
         });
         // reset 'fired' on weapon after cooldown, so it can be fired again
         // setTimeout(this.clearFired,bullet.firerate, weapon);
-    },
-    clearFired:function(weapon){
-        if (weapon.hasOwnProperty("fired")){
-            weapon.fired = false;
-        }
     },
     die:function(){
         Crafty.e("RandomExplosion").attr({
