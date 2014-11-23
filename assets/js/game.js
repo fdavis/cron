@@ -8,6 +8,8 @@ $(function(){
 
     //Init Crafty
     Crafty.init(800,600);
+    //going for 30 fps so a slower cpu can keep up *crosses fingers*
+    Crafty.timer.FPS(30);
     //Add Canvas Element
     Crafty.canvas.init();
     //Set canvas under interface
