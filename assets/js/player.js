@@ -69,6 +69,7 @@ Crafty.c("Player",{
     },
     powerups:{},
     ship:"ship1",
+    shieldHandle:0,
     bars:{},
     infos:{},
     preparing:true,
@@ -76,9 +77,10 @@ Crafty.c("Player",{
     init:function(){
      
         var stage = $('#cr-stage');
-        this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker") /*Add needed Components*/
+        this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
+        this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
-        .bind('Moved', function(from) { /*Bind a function which is triggered if player is moved*/
+        .bind('Moved', function(from) {
             /*Dont allow to move the player out of Screen*/
             if(this.x+this.w > Crafty.viewport.width ||
                 this.x+this.w < this.w || 
@@ -145,6 +147,15 @@ Crafty.c("Player",{
             }
         })
         .bind("EnterFrame",function(frame){
+            if(this.shield.current > 0){
+                this.shieldHandle.visible = true;
+                this.shieldHandle.alpha = this.shield.current / this.shield.max;
+                this.shieldHandle.x = this._x - (this.shieldHandle._w/2 - this._w/2);
+                this.shieldHandle.y = this._y - (this.shieldHandle._h/2 - this._h/2);
+            } else {
+                this.shieldHandle.visible = false;
+            }
+
             if(this.preparing){
                 this.y--;
                 if(this.y < Crafty.viewport.height-this.h-Crafty.viewport.height/4){
