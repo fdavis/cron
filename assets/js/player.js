@@ -214,8 +214,6 @@ Crafty.c("Player",{
                     this.bigWeapon.canBeFired = true;
                 }
             }
-            
-            // this.fpsHandle.text = fps.getFPS();
 
         })
         .bind("Killed",function(points){
@@ -237,12 +235,18 @@ Crafty.c("Player",{
                 x:this.x,
                 y:this.y
             });
+            console.log('before player hurt for:' + dmg + ' hull' + this.hp.current + ' shield' + this.shield.current);
             if(this.shield.current <= 0){
-                this.shield.current = 0;
                 this.hp.current -= dmg;
             }else{
                 this.shield.current -= dmg;
+                // if shield < 0, transfer that dmg to hp
+                if(this.shield.current < 0){
+                    this.hp.current += this.shield.current;
+                    this.shield.current = 0;
+                }
             } 
+            console.log('after player hurt for:' + dmg + ' hull' + this.hp.current + ' shield' + this.shield.current);
             // Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })
@@ -263,7 +267,6 @@ Crafty.c("Player",{
                 this.shield.current += val;
                 // Crafty.trigger("UpdateStats");
             }  
-        
         })
         .reset() /*Set initial points*/;
         return this;

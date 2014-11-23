@@ -4,12 +4,13 @@
 var powerUps = ["Heal","Shield"];
 //Basic enemy component
 Crafty.c("Enemy",{
-    playerID:null, //ID of player which has something todo with that enemy
+    playerID:null, //ID of player which has something todo with that enemy.
     //I guess this is shared??? see http://craftyjs.com/api/Crafty-c.html and https://github.com/craftyjs/Crafty/issues/327
     //is this messing up anything else >.> ??? \_(o-O)_/
     // splashedBy:[],//if splashed by a splash damage object, don't let it happen again
     init:function(){
         this.splashedBy = [];
+        this.playerID = Crafty('Player');
         //All enemies will get same basic components
         this.requires("2D,Canvas,Collision")  
         //Destroy all enemies if they leave the viewport
@@ -44,6 +45,16 @@ Crafty.c("Enemy",{
             //Hurt enemy with all hp he has
             this.trigger("Hurt",this.hp);
         })
+        //Describe behavior on getting hit by SpaceJunk
+        .onHit("SpaceJunk",function(ent){
+            var junk = ent[0].obj;
+            var dmg = 1;
+            //decide the dmg done
+            if(this.hp > junk.hp) dmg = junk.hp
+            else dmg = this.hp
+            junk.trigger("Hurt",dmg);
+            this.trigger("Hurt",dmg);
+        })
         //Event triggered when enemy was hurt
         .bind("Hurt",function(dmg){
             //Create a damage effect
@@ -63,7 +74,7 @@ Crafty.c("Enemy",{
                 y:this.y-this.h
             });
             //Trigger the player event to calculate points
-            Crafty(this.playerID).trigger("Killed",this.points);
+            Crafty('Player').trigger("Killed",this.points);
             //Destroy the asteroid
             this.destroy();
             if(Crafty.math.randomInt(0, 100) > 70){
@@ -75,13 +86,13 @@ Crafty.c("Enemy",{
             }
         })
         // moved to enemy for now ... need to refactor some how
-        .bind("Shoot",function(){
+        .bind("Shoot",function(speed){
             var dir = dir || {x: 0, y: -1};
             var weapon = {
                     name:"Weapon1",
                     dmg:1,
-                    speed:25,
-                    speedMax:25,
+                    speed:speed || 15,
+                    speedMax:speed || 15,
                     accel:0
                 };
             var bullet = Crafty.e(weapon.name,"EnemyBullet")
@@ -104,6 +115,17 @@ Crafty.c("Enemy",{
     }
 });
 
+Crafty.c("SpaceJunk",{
+    init:function(){
+        this.requires("Collision")
+        .onHit("EnemyBullet",function(ent){
+            var bullet = ent[0].obj;
+            this.trigger("Hurt",bullet.dmg); //Hurt the junk with bullet damage
+            bullet.destroy(); //Destroy the bullet
+        });
+    }
+});
+
 //Enemy type Asteroid
 Crafty.c("Asteroid",{
     hp:2, //Has 2 HP
@@ -113,7 +135,7 @@ Crafty.c("Asteroid",{
         var direction = Crafty.math.randomInt(-speed,speed); //Get random moving direction
       
         //Asteroid requires Enemy so it gets their functions and behavior
-        this.requires("Enemy,asteroid64,Tween")
+        this.requires("Enemy,asteroid64,Tween,SpaceJunk")
         .origin("center")
         .tween({rotation:this.rotation + 180}, 2000)
         .bind("TweenEnd", function (){
@@ -160,7 +182,7 @@ Crafty.c("SmallAsteroid",{
     init:function(){
         var speed =  Crafty.math.randomInt(1,3);
         var direction = Crafty.math.randomInt(-speed,speed);
-        this.requires("Enemy,asteroid32,Tween")
+        this.requires("Enemy,asteroid32,Tween,SpaceJunk")
         .origin("center")
         .tween({rotation:this.rotation + 180}, 2000)
         .bind("TweenEnd", function (){
@@ -224,6 +246,7 @@ Crafty.c("Kamikaze",{
 Crafty.c("Level1",{
     hp:2,
     points:5,
+    bulletSpeed:10,
     init:function(){
         var player = Crafty("Player");
         var x = 0;
@@ -239,7 +262,7 @@ Crafty.c("Level1",{
             x = Math.abs((this.x+this._w/2)-player.x);
         
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
-                this.trigger("Shoot");
+                this.trigger("Shoot", this.bulletSpeed);
             }
             this.y += 1.5;
         })
@@ -266,6 +289,7 @@ Crafty.c("Level1",{
 Crafty.c("Level2",{
     hp:2,
     points:10,
+    bulletSpeed:15,
     init:function(){
         var player = Crafty("Player");
         var x = 0;
@@ -286,7 +310,7 @@ Crafty.c("Level2",{
              
         
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
-                this.trigger("Shoot");
+                this.trigger("Shoot", this.bulletSpeed);
             }
             this.y += 1.5;
         });

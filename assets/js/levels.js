@@ -170,7 +170,7 @@ Crafty.scene("Level1",function(){
         // infos.weapon3.text('Weapon 3 ' + chargeOrReady(player.weapons[2].percent) + ': '+ player.weapons[2].percent + '%');
         infos.bigWeapon.text('Bomb ' + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
 
-        infos.hp.text('HP: ' + player.hp.current + '/' + player.hp.max);
+        infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
         infos.score.text("Score: " + player.score);
         infos.lives.text("Lives: " + player.lives);

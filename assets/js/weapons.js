@@ -36,13 +36,13 @@ Crafty.c("Bullet",{
             this.y -= this.yspeed; 
         })
         .onHit("Bullet",function(ent){
-            myId = this.playerID;
-            theirId = ent[0].obj.playerID;
-            if ( myId == theirId ){
+            var that = ent[0].obj;
+            if(this.has("PlayerBullet") && that.has("PlayerBullet")
+                || this.has("EnemyBullet") && that.has("EnemyBullet")){
                 return; //don't let friendly bullets kill each other
             }
             if(this.bulletCollision) this.destroy();
-            if(ent[0].obj.bulletCollision) ent[0].obj.destroy();
+            if(that.bulletCollision) that.destroy();
         });
     },
     Bullet:function(args){
