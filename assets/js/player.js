@@ -42,11 +42,12 @@ Crafty.c("Player",{
                     percent:100
                 },
                 {
-                    name:"Weapon2",
+                    name:"Laser_Wave",
                     fired: false,
                     dmg:2,
                     speed:19,
                     speedMax:19,
+                    bullletCollision:false,
                     accel:0,
                     cooldownCounter:22,
                     fireInterval:22,

@@ -9,6 +9,7 @@ Crafty.c("Bullet",{
     yspeed:1,
     yaccel:0,
     ymax:1,
+    bulletCollision:true,
     init:function(){
         this.addComponent("2D","Canvas","Collision")
         // .origin("center")
@@ -40,8 +41,8 @@ Crafty.c("Bullet",{
             if ( myId == theirId ){
                 return; //don't let friendly bullets kill each other
             }
-            this.destroy();
-            ent[0].obj.destroy();
+            if(this.bulletCollision) this.destroy();
+            if(ent[0].obj.bulletCollision) ent[0].obj.destroy();
         });
     },
     Bullet:function(args){
@@ -91,7 +92,16 @@ Crafty.c("Bomb",{
 Crafty.c("Weapon2",{
     init:function(){
         this
-        .addComponent("Bullet","laser2")
+        .addComponent("Bullet","laser2");
         Crafty.audio.play("laser2",1,0.8);
     } 
+});
+
+Crafty.c("Laser_Wave",{
+    init:function(){
+        this
+        .addComponent("Bullet","laser_wave");
+        this.bulletCollision = false;
+        Crafty.audio.play("laser2",1,0.8);
+    }
 });

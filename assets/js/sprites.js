@@ -29,8 +29,11 @@ Crafty.sprite(5,13,game_path + "assets/img/missile_small.png",{
 Crafty.sprite(20,52,game_path + "assets/img/missile_large.png",{
     missile2:[0,0] 
 });
-Crafty.sprite(27,36,game_path + "assets/img/weapon2.png",{
+Crafty.sprite(27,36,game_path + "assets/img/laser2.png",{
     laser2:[0,0] 
+});
+Crafty.sprite(40,53,game_path + "assets/img/laser_wave.png",{
+    laser_wave:[0,0] 
 });
 Crafty.sprite(29,game_path + "assets/img/dmg.png",{
     dmg:[0,0]
