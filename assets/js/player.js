@@ -24,6 +24,8 @@ Crafty.c("Player",{
                     fired: false,
                     dmg:1,
                     speed:25,
+                    speedMax:25,
+                    accel:0,
                     cooldownCounter:7,
                     fireInterval:9,
                     percent:100
@@ -32,7 +34,9 @@ Crafty.c("Player",{
                     name:"MissileLauncher1",
                     fired: false,
                     dmg:3,
-                    speed:10,
+                    speed:5,
+                    speedMax:20,
+                    accel:0.3,
                     cooldownCounter:34,
                     fireInterval:34,
                     percent:100
@@ -42,6 +46,8 @@ Crafty.c("Player",{
                     fired: false,
                     dmg:2,
                     speed:19,
+                    speedMax:19,
+                    accel:0,
                     cooldownCounter:22,
                     fireInterval:22,
                     percent:100
@@ -54,6 +60,8 @@ Crafty.c("Player",{
         fired: false,
         dmg:10,
         speed:2,
+        speedMax:2,
+        accel:0,
         cooldownCounter:120,
         fireInterval:120,
         percent:100
@@ -265,17 +273,24 @@ Crafty.c("Player",{
             }
         }
 
-        var bullet = Crafty.e(weapon.name,"PlayerBullet");//FIXME call bullet constructor
-        bullet.attr({
-            playerID:this[0],
-            x: this._x+this._w/2-bullet.w/2, //center on ship
-            y: this._y+this._h/2-bullet.h/2,
+        var bullet = Crafty.e(weapon.name,"PlayerBullet")//FIXME call bullet constructor
+        .Bullet({
+            playerID: this[0],
+            dmg: weapon.dmg,
             rotation: myrot,
-            xspeed: bullet.speed * dir.x,
-            yspeed: bullet.speed * dir.y
+            xspeed: weapon.speed * dir.x,
+            xaccel: weapon.accel * dir.x,
+            xmax: weapon.speedMax * dir.x,
+            yspeed: weapon.speed * dir.y,
+            yaccel: weapon.accel * dir.y,
+            ymax: weapon.speedMax * dir.y
         });
-        // reset 'fired' on weapon after cooldown, so it can be fired again
-        // setTimeout(this.clearFired,bullet.firerate, weapon);
+
+        //center bullet starting position on player's ship
+        bullet.attr({
+            x: this._x+this._w/2-bullet.w/2,
+            y: this._y+this._h/2-bullet.h/2
+        });
     },
     die:function(){
         Crafty.e("RandomExplosion").attr({

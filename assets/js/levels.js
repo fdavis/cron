@@ -113,9 +113,6 @@ Crafty.scene("Level1",function(){
     }
     var myFPS = 0;
 
-   
-        
-        
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
@@ -127,7 +124,7 @@ Crafty.scene("Level1",function(){
             Crafty.e("Kamikaze");   
         }
         if(frame % 80 == 0  && Crafty("Level1").length < 1){
-            Crafty.e("Rookie");
+            Crafty.e("Level1");
         }
         if(frame % 90 == 0  && Crafty("Level2").length < 1){
             Crafty.e("Level2");
@@ -164,7 +161,7 @@ Crafty.scene("Level1",function(){
         infos.lives.text("Lives: " + player.lives);
         infos.fps.text("FPS: " + myFPS);
         
-        //Update progressbars
+        //Update progress bars
         bars.weapon.progressbar({
             value:player.weapons[0].percent
         });
@@ -174,8 +171,15 @@ Crafty.scene("Level1",function(){
         bars.weapon3.progressbar({
             value:player.weapons[2].percent
         });
+
         // selected weapon highlighter
-        $("#weaponSlot1").css({"background-image": "url(assets/img/bar_overlay.png)"});
+        for (var i = 0; i < player.maxWeapon; i++){
+            if( player.currentWeapon == i ){
+                $("#weaponSlot" + (i + 1)).css({"background-image": "url(assets/img/bar_overlay.png)"});
+            } else {
+                $("#weaponSlot" + (i + 1)).css({"background-image": "none"});
+            }
+        }
 
         bars.bigWeapon.progressbar({
             value:player.bigWeapon.percent
@@ -186,6 +190,7 @@ Crafty.scene("Level1",function(){
         bars.shield.progressbar({
             value:player.shield.percent
         });
+
     });
     // Tell player to shoot this direction
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {

@@ -5,8 +5,11 @@ var powerUps = ["Heal","Shield"];
 //Basic enemy component
 Crafty.c("Enemy",{
     playerID:null, //ID of player which has something todo with that enemy
-    splashedBy:[],//if splashed by a splash damage object, don't let it happen again
+    //I guess this is shared??? see http://craftyjs.com/api/Crafty-c.html and https://github.com/craftyjs/Crafty/issues/327
+    //is this messing up anything else >.> ??? \_(o-O)_/
+    // splashedBy:[],//if splashed by a splash damage object, don't let it happen again
     init:function(){
+        this.splashedBy = [];
         //All enemies will get same basic components
         this.requires("2D,Canvas,Collision")  
         //Destroy all enemies if they leave the viewport
@@ -28,7 +31,7 @@ Crafty.c("Enemy",{
         //Describe behavior on getting hit by splash damage
         .onHit("SplashDamage",function(ent){
             var splash = ent[0].obj;
-            if(this.splashedBy.indexOf(splash[0]) == -1){
+            if(this.splashedBy.indexOf(splash[0]) == -1 && this.hp > 0){//added check bc dead enemies were getting splashed
                 this.splashedBy.push(splash[0]);
                 this.trigger("Hurt",splash.dmg); //Hurt the enemy with bullet damage
             }
@@ -70,6 +73,33 @@ Crafty.c("Enemy",{
                     y:this.y
                 });
             }
+        })
+        // moved to enemy for now ... need to refactor some how
+        .bind("Shoot",function(){
+            var dir = dir || {x: 0, y: -1};
+            var weapon = {
+                    name:"Weapon1",
+                    dmg:1,
+                    speed:25,
+                    speedMax:25,
+                    accel:0
+                };
+            var bullet = Crafty.e(weapon.name,"EnemyBullet")
+            .Bullet({
+                playerID: this[0],
+                dmg: weapon.dmg,
+                xspeed: weapon.speed * dir.x,
+                xaccel: weapon.accel * dir.x,
+                xmax: weapon.speedMax * dir.x,
+                yspeed: weapon.speed * dir.y,
+                yaccel: weapon.accel * dir.y,
+                ymax: weapon.speedMax * dir.y
+            });
+            bullet.attr({
+                x: this._x+this._w/2+bullet.w*3/4,
+                y: this._y+this._h-bullet.h/2,
+                rotation: this._rotation
+            });  
         });
     }
 });
@@ -204,16 +234,24 @@ Crafty.c("Level1",{
             }
             this.y += 1.5;
         })
-        .bind("Shoot",function(){
-            var bullet = Crafty.e("Weapon1","EnemyBullet");
-            bullet.attr({
-                x: this._x+this._w/2-bullet.w/2,
-                y: this._y+this._h-bullet.h/2,
-                rotation: this._rotation,
-                xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
-                yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
-            });   
-        });
+        // .bind("Shoot",function(){
+        //     var dir = dir || {x: 0, y: 1};
+        //     var weapon = {
+        //             name:"Weapon1",
+        //             dmg:1,
+        //             speed:25,
+        //             speedMax:25,
+        //             accel:0
+        //     };
+        //     var bullet = Crafty.e("Weapon1","EnemyBullet");
+        //     bullet.attr({
+        //         x: this._x+this._w/2+bullet.w/2,
+        //         y: this._y+this._h-bullet.h/2,
+        //         rotation: this._rotation,
+        //         xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
+        //         yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
+        //     });   
+        // });
     }
 });
 Crafty.c("Level2",{
@@ -242,16 +280,6 @@ Crafty.c("Level2",{
                 this.trigger("Shoot");
             }
             this.y += 1.5;
-        })
-        .bind("Shoot",function(){
-            var bullet = Crafty.e("Weapon1","EnemyBullet");
-            bullet.attr({
-                x: this._x+this._w/2-bullet.w/2,
-                y: this._y+this._h-bullet.h/2,
-                rotation: this._rotation,
-                xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
-                yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
-            });  
         });
     }
 });

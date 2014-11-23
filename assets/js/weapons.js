@@ -3,8 +3,15 @@
 Crafty.c("Bullet",{
     dmg:0,
     firerate:0,
+    xspeed:1,
+    xaccel:0,
+    xmax:1,
+    yspeed:1,
+    yaccel:0,
+    ymax:1,
     init:function(){
         this.addComponent("2D","Canvas","Collision")
+        // .origin("center")
         .bind("EnterFrame",function(){
             if(this.x > Crafty.viewport.width+this.w ||
                 this.x < -this.w || 
@@ -12,6 +19,20 @@ Crafty.c("Bullet",{
                 this.y > Crafty.viewport.height+this.h){
                 this.destroy();
             }
+        })
+        .bind("EnterFrame", function() {
+            this.xspeed += this.xaccel;
+            if( Math.abs(this.xspeed) >= Math.abs(this.xmax) ){ 
+                this.xspeed = this.xmax;
+                this.xaccel = 0;
+            }
+            this.yspeed += this.yaccel;
+            if( Math.abs(this.yspeed) >= Math.abs(this.ymax) ){ 
+                this.yspeed = this.ymax;
+                this.yaccel = 0;
+            }
+            this.x += this.xspeed;
+            this.y -= this.yspeed; 
         })
         .onHit("Bullet",function(ent){
             myId = this.playerID;
@@ -22,6 +43,14 @@ Crafty.c("Bullet",{
             this.destroy();
             ent[0].obj.destroy();
         });
+    },
+    Bullet:function(args){
+        for (var k in args){
+            if (args.hasOwnProperty(k)) {
+                this[k] = args[k];
+            }
+        }
+        return this;
     }
 });
 
@@ -29,16 +58,6 @@ Crafty.c("Weapon1",{
     init:function(){
         this
         .addComponent("Bullet","laser1")
-        .origin("center")
-        .bind("EnterFrame", function() {
-            this.x += this.xspeed;
-            this.y -= this.yspeed; 
-        })
-        .attr({
-            dmg:1,
-            speed:25,
-            firerate:200
-        });
         Crafty.audio.play("laser1",1,0.8);
     } 
 });
@@ -47,16 +66,6 @@ Crafty.c("MissileLauncher1",{
     init:function(){
         this
         .addComponent("Bullet","missile1")
-        .origin("center")
-        .bind("EnterFrame", function() {
-            this.x += this.xspeed;
-            this.y -= this.yspeed; 
-        })
-        .attr({
-            dmg:3,
-            speed:10,
-            firerate:675
-        });
         Crafty.audio.play("laser1",1,0.8);
     } 
 });
@@ -66,55 +75,23 @@ Crafty.c("Bomb",{
     init:function(){
         this
         .addComponent("Bullet","missile2")
-        .origin("center")
-        .bind("EnterFrame", function() {
-            this.x += this.xspeed;
-            this.y -= this.yspeed; 
-        })
-        .attr({
-            dmg:30,
-            speed:5,
-            firerate:675
-        })
-        //Event triggered when this bullet is destroyed
         .bind("Remove",function(dmg){
-        //Create a random explosion at his position
-            Crafty.e("RandomExplosion,SplashDamage")
+            //Create a random explosion at it's position
+            Crafty.e("RandomExplosion,SplashDamage,Collision")
             .attr({
                 x:this.x-this.w*3,//FIXME why do these scalars work????
-                y:this.y-this.h*1.3
+                y:this.y-this.h*1.3,
+                dmg:5
             });
         });
         Crafty.audio.play("laser1",1,0.8);
     } 
 });
 
-Crafty.c("SplashDamage",{
-    dmg:5,
-    init:function(){
-        this.addComponent("Collision");
-        // .onHit("Enemy",function(ent){
-        //     console.log('splash damage triggered');
-        //     console.log(this);
-        //     ent[0].obj.trigger("Hurt",1);
-        // });
-    }
-
-});
-
 Crafty.c("Weapon2",{
     init:function(){
         this
         .addComponent("Bullet","laser2")
-        .origin("center")
-        .bind("EnterFrame", function() {
-            this.x += this.xspeed;
-            this.y -= this.yspeed;  
-        }).attr({
-            dmg:2,
-            speed:17,
-            firerate:450
-        });
         Crafty.audio.play("laser2",1,0.8);
     } 
 });
