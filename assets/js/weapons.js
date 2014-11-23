@@ -63,6 +63,14 @@ Crafty.c("Weapon1",{
     } 
 });
 
+Crafty.c("AutoLaser",{
+    init:function(){
+        this
+        .addComponent("Bullet","laser1")
+        Crafty.audio.play("laser1",1,0.8);
+    } 
+});
+
 Crafty.c("MissileLauncher1",{
     init:function(){
         this

@@ -87,26 +87,26 @@ Crafty.scene("Level1",function(){
     var bars = {
         hp:$('#hp'),
         bigWeapon:$('#bigWeapon'),
-        weapon:$('#weapon'),
-        weapon2:$('#weapon2'),
-        weapon3:$('#weapon3'),
+        weapon:[$('#weapon'),
+                $('#weapon2'),
+                $('#weapon3')],
         shield:$('#shield')
     };
     bars.hp.addClass('red');
     bars.shield.addClass('blue');
     bars.bigWeapon.addClass('green');
-    bars.weapon.addClass('green');
-    bars.weapon2.addClass('green');
-    bars.weapon3.addClass('green');
+    bars.weapon[0].addClass('green');
+    bars.weapon[1].addClass('green');
+    bars.weapon[2].addClass('green');
     
     var infos = {
         lives: $('.lives'),
         score: $('.score'),
         fps: $('.fps'),
         hp:bars.hp.find('.text'),
-        weapon:bars.weapon.find('.text'),
-        weapon2:bars.weapon2.find('.text'),
-        weapon3:bars.weapon3.find('.text'),
+        weapon:[bars.weapon[0].find('.text'),
+                bars.weapon[1].find('.text'),
+                bars.weapon[2].find('.text')],
         bigWeapon:bars.bigWeapon.find('.text'),
         shield:bars.shield.find('.text'),
         alert:$('.alert')
@@ -116,14 +116,13 @@ Crafty.scene("Level1",function(){
     var spotEnemys = function(frame){   
         //Spot each 50th Fram one Asteroid
  
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 2 && Crafty("SmallAsteroid").length < 8){
+        if(frame % 50 == 0 && Crafty("Asteroid").length < 4){
             Crafty.e("Asteroid"); 
         }
-        
-        if(frame % 70 == 0 && Crafty("Kamikaze").length < 1){
+        if(frame % 70 == 0 && Crafty("Kamikaze").length < 2){
             Crafty.e("Kamikaze");   
         }
-        if(frame % 80 == 0  && Crafty("Level1").length < 1){
+        if(frame % 80 == 0  && Crafty("Level1").length < 2){
             Crafty.e("Level1");
         }
         if(frame % 90 == 0  && Crafty("Level2").length < 1){
@@ -144,15 +143,31 @@ Crafty.scene("Level1",function(){
         player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
         player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
         
-        player.weapons[0].percent = Math.round(player.weapons[0].cooldownCounter / player.weapons[0].fireInterval * 100);
-        player.weapons[1].percent = Math.round(player.weapons[1].cooldownCounter / player.weapons[1].fireInterval * 100);
-        player.weapons[2].percent = Math.round(player.weapons[2].cooldownCounter / player.weapons[2].fireInterval * 100);
+        for(var i = 0; i < player.maxWeapon; ++i){
+            // update the text of the weapon status bar
+            if (false == player.weapons[i].isAuto){
+                player.weapons[i].percent = Math.round(player.weapons[i].cooldownCounter / player.weapons[i].fireInterval * 100);
+                infos.weapon[i].text(player.weapons[i].statBanner + " " + chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%');
+            } else{
+                player.weapons[i].percent = Math.round(player.weapons[i].heat);
+                infos.weapon[i].text(player.weapons[i].statBanner + ' Heat: ' + player.weapons[i].percent + '%');
+            }
+            // update the progress fill in
+            bars.weapon[i].progressbar({ value:player.weapons[i].percent });
+            // update the select highlighter
+            if( player.currentWeapon == i ){
+                $("#weaponSlot" + (i + 1)).css({"background-image": "url(assets/img/bar_overlay.png)"});
+            } else {
+                $("#weaponSlot" + (i + 1)).css({"background-image": "none"});
+            }
+        }
         player.bigWeapon.percent = Math.round(player.bigWeapon.cooldownCounter / player.bigWeapon.fireInterval * 100);
 
         //display the values
-        infos.weapon.text('Weapon 1 ' + chargeOrReady(player.weapons[0].percent) + ': '+ player.weapons[0].percent + '%');
-        infos.weapon2.text('Weapon 2 ' + chargeOrReady(player.weapons[1].percent) + ': '+ player.weapons[1].percent + '%');
-        infos.weapon3.text('Weapon 3 ' + chargeOrReady(player.weapons[2].percent) + ': '+ player.weapons[2].percent + '%');
+
+        
+        // infos.weapon2.text('Weapon 2 ' + chargeOrReady(player.weapons[1].percent) + ': '+ player.weapons[1].percent + '%');
+        // infos.weapon3.text('Weapon 3 ' + chargeOrReady(player.weapons[2].percent) + ': '+ player.weapons[2].percent + '%');
         infos.bigWeapon.text('Bomb ' + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
 
         infos.hp.text('HP: ' + player.hp.current + '/' + player.hp.max);
@@ -162,24 +177,17 @@ Crafty.scene("Level1",function(){
         infos.fps.text("FPS: " + myFPS);
         
         //Update progress bars
-        bars.weapon.progressbar({
-            value:player.weapons[0].percent
-        });
-        bars.weapon2.progressbar({
-            value:player.weapons[1].percent
-        });
-        bars.weapon3.progressbar({
-            value:player.weapons[2].percent
-        });
+        // bars.weapon2.progressbar({
+        //     value:player.weapons[1].percent
+        // });
+        // bars.weapon3.progressbar({
+        //     value:player.weapons[2].percent
+        // });
 
         // selected weapon highlighter
-        for (var i = 0; i < player.maxWeapon; i++){
-            if( player.currentWeapon == i ){
-                $("#weaponSlot" + (i + 1)).css({"background-image": "url(assets/img/bar_overlay.png)"});
-            } else {
-                $("#weaponSlot" + (i + 1)).css({"background-image": "none"});
-            }
-        }
+        // for (var i = 0; i < player.maxWeapon; i++){
+            
+        // }
 
         bars.bigWeapon.progressbar({
             value:player.bigWeapon.percent

@@ -184,6 +184,7 @@ Crafty.c("Kamikaze",{
     init:function(){
         var player = Crafty("Player");
         var attacking = false;
+        var xspeed = 6;
         this.requires("Enemy,ship11")
         .origin("center")
         .attr({
@@ -196,14 +197,22 @@ Crafty.c("Kamikaze",{
             if(this.y < 0)
                 this.y +=2;
 
-            if(this.x < player.x && !attacking)
-                this.x++;
-            
-            if(this.x > player.x && !attacking)
-                this.x--;
+            // if close enough to match player.x then do it
+            var xDiff = player.x - this.x;
+            if (Math.abs(xDiff) < xspeed){
+                this.x += xDiff;
+            } else{
+                if(this.x < player.x)
+                    this.x += xspeed;
+                
+                if(this.x > player.x)
+                    this.x -= xspeed;
+            }
         
-            if(this.x == player.x)
+            if(this.x == player.x){
                 attacking = true;
+                xspeed = Math.round(xspeed/2); //half x adjust on descent
+            }
             
             if(attacking)
                 this.y += 4;

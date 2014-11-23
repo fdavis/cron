@@ -20,30 +20,39 @@ Crafty.c("Player",{
     score:0,
     weapons:[
                 {
-                    name:"Weapon1",
-                    fired: false,
+                    name:"AutoLaser",
+                    canBeFired: true,
+                    isAuto: true,
+                    coolingRate: .5,
+                    heatingRate: 4,
+                    heat: 0,
                     dmg:1,
                     speed:25,
                     speedMax:25,
                     accel:0,
-                    cooldownCounter:7,
-                    fireInterval:9,
-                    percent:100
+                    // cooldownCounter:9,
+                    // fireInterval:9,
+                    fireRate:5,
+                    percent:0,
+                    statBanner:"AutoLaser"
                 },
                 {
                     name:"MissileLauncher1",
-                    fired: false,
+                    canBeFired: true,
+                    isAuto: false,
                     dmg:3,
                     speed:5,
                     speedMax:20,
                     accel:0.3,
                     cooldownCounter:34,
                     fireInterval:34,
-                    percent:100
+                    percent:100,
+                    statBanner:"Missile Launcher"
                 },
                 {
                     name:"Laser_Wave",
-                    fired: false,
+                    canBeFired: true,
+                    isAuto: false,
                     dmg:2,
                     speed:19,
                     speedMax:19,
@@ -51,21 +60,24 @@ Crafty.c("Player",{
                     accel:0,
                     cooldownCounter:22,
                     fireInterval:22,
-                    percent:100
+                    percent:100,
+                    statBanner:"Laser Wave"
                 }
             ],
     currentWeapon:0,
     maxWeapon:3,
     bigWeapon:{
         name:"Bomb",
-        fired: false,
+        canBeFired: true,
+        isAuto: false,
         dmg:10,
         speed:2,
         speedMax:2,
         accel:0,
         cooldownCounter:120,
         fireInterval:120,
-        percent:100
+        percent:100,
+        statBanner:"Bomb"
     },
     powerups:{},
     ship:"ship1",
@@ -81,7 +93,7 @@ Crafty.c("Player",{
         this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
         .bind('Moved', function(from) {
-            /*Dont allow to move the player out of Screen*/
+            // Don't allow to move the player out of Screen
             if(this.x+this.w > Crafty.viewport.width ||
                 this.x+this.w < this.w || 
                 this.y+this.h-35 < this.h || 
@@ -111,8 +123,8 @@ Crafty.c("Player",{
             // or use the space bomb
             } else if(e.keyCode === Crafty.keys.SPACE){
                 if(this.preparing) return;
-                if(this.bigWeapon.fired == false){
-                    this.bigWeapon.fired = true;
+                if(this.bigWeapon.canBeFired == true){
+                    this.bigWeapon.canBeFired = false;
                     this.bigWeapon.cooldownCounter = 0;
                     this.shoot({x:0,y:1},this.bigWeapon);
                 }
@@ -128,9 +140,14 @@ Crafty.c("Player",{
         // })
         .bind("canvasMouseDown", function (e) {
             if(this.preparing) return;
-            if(this.weapons[this.currentWeapon].fired == false) {
-                this.weapons[this.currentWeapon].fired = true;
-                this.weapons[this.currentWeapon].cooldownCounter = 0;
+            if(this.weapons[this.currentWeapon].canBeFired == true) {
+                // if auto then call heat weapon
+                if(false == this.weapons[this.currentWeapon].isAuto){
+                    this.weapons[this.currentWeapon].canBeFired = false;
+                    this.weapons[this.currentWeapon].cooldownCounter = 0;
+                } else{
+                    this.heatWeapon(this.weapons[this.currentWeapon]);
+                }
 
                 // get canvas for reference offsets
                 var canvas = $("#cr-stage");//FIXME use stage var?
@@ -147,6 +164,25 @@ Crafty.c("Player",{
             }
         })
         .bind("EnterFrame",function(frame){
+            if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
+                if(Crafty.lastEvent 
+                    && this.weapons[this.currentWeapon].canBeFired
+                    && mouseDown > 0){
+                    //fire if mouse is down and current weapon is auto fire
+                    this.trigger("canvasMouseDown", Crafty.lastEvent);
+                } else {
+                    // do auto weapon cooling
+                    this.coolWeapon(this.weapons[this.currentWeapon]);
+                }
+            }
+            // handle cooling other auto weapons (if any)
+            for(var i = 0; i < this.maxWeapon; ++i) {
+                if(i == this.currentWeapon) continue;
+                if(true == this.weapons[i].isAuto && frame.frame % this.weapons[i].fireRate == 0){
+                    this.coolWeapon(this.weapons[i]);
+                }
+            }
+
             if(this.shield.current > 0){
                 this.shieldHandle.visible = true;
                 this.shieldHandle.alpha = this.shield.current / this.shield.max;
@@ -165,17 +201,17 @@ Crafty.c("Player",{
                 }
             }
             for(var i = 0; i < this.weapons.length; i++){
-                if(this.weapons[i].fired == true ){
-                    this.weapons[i].cooldownCounter++;
+                if(false == this.weapons[i].isAuto && false == this.weapons[i].canBeFired){
+                    ++this.weapons[i].cooldownCounter;
                     if(this.weapons[i].fireInterval == this.weapons[i].cooldownCounter ){
-                        this.weapons[i].fired = false;
+                        this.weapons[i].canBeFired = true;
                     }
                 }
             }
-            if(this.bigWeapon.fired == true ){
-                this.bigWeapon.cooldownCounter++;
+            if(false == this.bigWeapon.canBeFired){
+                ++this.bigWeapon.cooldownCounter;
                 if(this.bigWeapon.fireInterval == this.bigWeapon.cooldownCounter ){
-                    this.bigWeapon.fired = false;
+                    this.bigWeapon.canBeFired = true;
                 }
             }
             
@@ -248,13 +284,20 @@ Crafty.c("Player",{
             max:100,
             percent:0
         }
-        // reset all guns fireable
+        // reset all guns
         for(var i = 0; i < this.maxWeapon; i++){
-            this.weapons[i].fired = false;
-            this.weapons[i].cooldownCounter = this.weapons[i].fireInterval;
+            if(false == this.weapons[i].isAuto){
+                this.weapons[i].canBeFired = true;
+                this.weapons[i].cooldownCounter = this.weapons[i].fireInterval;
+            } else {
+                // auto weapons reset logic
+                this.weapons[i].canBeFired = true;
+                this.weapons[i].heat = 0;
+            }
         }
-        this.bigWeapon.fired = false;
+        this.bigWeapon.canBeFired = true;
         this.bigWeapon.cooldownCounter = this.bigWeapon.fireInterval;
+
         // Crafty.trigger("UpdateStats");
         //Init position
         this.x = Crafty.viewport.width/2-this.w/2;
@@ -316,6 +359,17 @@ Crafty.c("Player",{
             Crafty.trigger("GameOver",this.score);
         }else{
             this.reset();
+        }
+    },
+    coolWeapon:function(weapon){
+        weapon.heat -= weapon.coolingRate;
+        if (weapon.heat < 0) weapon.heat = 0;
+        if (weapon.heat < 100) weapon.canBeFired = true;
+    },
+    heatWeapon:function(weapon){
+        weapon.heat += weapon.heatingRate;
+        if (weapon.heat > 100) {
+            weapon.canBeFired = false;
         }
     }
 });
