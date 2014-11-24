@@ -20,6 +20,19 @@ Crafty.scene("Loading",function(){
     //Setup progressbar
     text.text("Loading ...");
 
+    // Load some jsons
+    // game_path
+    // allTheWeapons = jQuery.parseJSON(game_path +  "assets/jsons/weapons.json");
+    // var weapJsonLoaded = false;
+    // var loaderLoaded = false;
+    // $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
+    //     console.log(data);
+    //     var weapJsonLoaded = true;
+    //     allTheWeapons = data;
+    //     if(loaderLoaded) button.show();
+    //     console.log('weapons loaded call back complete');
+    // });
+
     bar.progressbar({
         value:0
    
@@ -37,12 +50,22 @@ Crafty.scene("Loading",function(){
             
     });
     
+
     Crafty.load(toLoad,
         function() {
-            //Everything is loaded
-            bar.fadeOut(1000,function(){
-                button.show();
+            //Everything is loaded, load my jsons...?
+            $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
+                allTheWeapons = data;
+                bar.fadeOut(1000, function(){
+                    button.show();
+                });
             });
+            // bar.fadeOut(1000);
+            // ,function(){
+            //     // if(weapJsonLoaded) button.show();
+            //     // var loaderLoaded = true;
+                
+            // });
             
         },
         function(e) {

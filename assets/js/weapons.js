@@ -55,6 +55,227 @@ Crafty.c("Bullet",{
     }
 });
 
+// example weapon data
+                //     name:"AutoLaser",
+                //     canBeFired: true,
+                //     isAuto: true,
+                //     coolingRate: .5,
+                //     heatingRate: 4,
+                //     heat: 0,
+                //     dmg:1,
+                //     speed:25,
+                //     speedMax:25,
+                //     accel:0,
+                //     // cooldownCounter:9,
+                //     // fireInterval:9,
+                //     fireRate:5,
+                //     percent:0,
+                //     statBanner:"AutoLaser"
+                // },
+                // {
+                //     name:"MissileLauncher1",
+                //     canBeFired: true,
+                //     isAuto: false,
+                //     dmg:3,
+                //     speed:5,
+                //     speedMax:20,
+                //     accel:0.3,
+                //     cooldownCounter:34,
+                //     fireInterval:34,
+                //     percent:100,
+                //     statBanner:"Missile Launcher"
+                // },
+// Defaults w/ constructors for Weapons
+Crafty.c("Weapon",{
+    name:"Weapon1", //default is laser1, but should this be required field?
+    canBeFired: true,
+    isAuto: false,
+    dmg:1,
+    speed:5,
+    speedMax:5,
+    accel:0,
+    cooldownCounter:30,
+    fireInterval:30,
+    percent:100,
+    cooldownCounter:5,
+    fireInterval:5,    
+    coolingRate: 1,
+    heatingRate: 4,
+    statBanner:"Laser",
+    Weapon:function(args){
+        for (var k in args){
+            if (args.hasOwnProperty(k)) {
+                this[k] = args[k];
+            }
+        }
+        return this;
+    }
+});
+
+//Debug stufff
+// console.log('stringify json');
+// console.log(JSON.stringify([{
+//             "AutoLaser":{
+//                 canBeFired: true,
+//                 isAuto: true,
+//                 coolingRate: 1,
+//                 heatingRate: 4,
+//                 heat: 0,
+//                 dmg:1,
+//                 speed:25,
+//                 speedMax:25,
+//                 accel:0,
+//                 fireRate:3,
+//                 percent:0,
+//                 statBanner:"AutoLaser"
+//             }
+//         },
+//         {
+//             "MissileLauncher1":{
+//                 canBeFired: true,
+//                 isAuto: false,
+//                 dmg:3,
+//                 speed:5,
+//                 speedMax:40,
+//                 accel:0.6,
+//                 cooldownCounter:34,
+//                 fireInterval:34,
+//                 percent:100,
+//                 statBanner:"Missile Launcher"
+//             }
+//         }
+//         ]));
+
+//Failed attempt
+// var allTheWeapons = jQuery.parseJSON(
+//     '{
+//         "Weapon_AutoLaser": {
+//             "specs": {
+//                 "name": "AutoLaser",
+//                 "canBeFired": true,
+//                 "isAuto": true,
+//                 "coolingRate": 1,
+//                 "heatingRate": 4,
+//                 "heat": 0,
+//                 "dmg": 1,
+//                 "speed": 25,
+//                 "speedMax": 25,
+//                 "accel": 0,
+//                 "fireRate": 3,
+//                 "percent": 0,
+//                 "statBanner": "AutoLaser"
+//             }
+//         },
+//         "Weapon_MissleLauncher": {
+//             "specs": {
+//                 "name": "MissileLauncher1",
+//                 "canBeFired": true,
+//                 "isAuto": false,
+//                 "dmg": 3,
+//                 "speed": 5,
+//                 "speedMax": 40,
+//                 "accel": 0.6,
+//                 "cooldownCounter": 34,
+//                 "fireInterval": 34,
+//                 "percent": 100,
+//                 "statBanner": "Missile Launcher"
+//             }
+//         }
+//     }');
+// var weaponsJson = '{
+//    "AutoLaser":{
+//       "name":"AutoLaser",
+//       "canBeFired":true,
+//       "isAuto":true,
+//       "coolingRate":1,
+//       "heatingRate":4,
+//       "heat":0,
+//       "dmg":1,
+//       "speed":25,
+//       "speedMax":25,
+//       "accel":0,
+//       "fireRate":3,
+//       "percent":0,
+//       "statBanner":"AutoLaser"
+//    },
+//    "MissileLauncher1":{
+//       "name":"MissileLauncher1",
+//       "canBeFired":true,
+//       "isAuto":false,
+//       "dmg":3,
+//       "speed":5,
+//       "speedMax":40,
+//       "accel":0.6,
+//       "cooldownCounter":34,
+//       "fireInterval":34,
+//       "percent":100,
+//       "statBanner":"Missile Launcher"
+//    }
+// }';
+// var allTheWeapons = jQuery.parseJSON('{"AutoLaser":{"name":"AutoLaser","canBeFired":true,"isAuto":true,"coolingRate":1,"heatingRate":4,"heat":0,"dmg":1,"speed":25,"speedMax":25,"accel":0,"fireRate":3,"percent":0,"statBanner":"AutoLaser"},"MissileLauncher1":{"name":"MissileLauncher1","canBeFired":true,"isAuto":false,"dmg":3,"speed":5,"speedMax":40,"accel":0.6,"cooldownCounter":34,"fireInterval":34,"percent":100,"statBanner":"Missile Launcher"}}');
+// console.log(weaponsJson);
+// console.log(weaponsJson.replace(/(\r\n|\n|\r)/gm,""));
+
+// var allTheWeapons = jQuery.parseJSON(weaponsJson.replace(/(\r\n|\n|\r)/gm,""));
+
+// console.log(allTheWeapons);
+// // MAKE ALL THE WEAPONS!!!
+// for (var k in allTheWeapons){
+//     if (allTheWeapons.hasOwnProperty(k)) {
+//         this[k] = args[k];
+//     }
+// }
+// for( var i = 0; i < allTheWeapons.length; ++i){
+//     console.log(allTheWeapons[i]);
+//     Crafty.c(allTheWeapons[i].name,{
+//         init:function(){
+//             this.addComponent("Weapon")
+//             .Weapon(allTheWeapons[i].specs);
+//         }
+//     });
+// }
+
+//REMOVE WHEN AUTOMATION WORKS
+// Crafty.c("Weapon_AutoLaser",{
+//     init:function(){
+//         this.addComponent("Weapon")
+//         .Weapon({
+//             name:"AutoLaser",
+//             canBeFired: true,
+//             isAuto: true,
+//             coolingRate: 1,
+//             heatingRate: 4,
+//             heat: 0,
+//             dmg:1,
+//             speed:25,
+//             speedMax:25,
+//             accel:0,
+//             fireRate:3,
+//             percent:0,
+//             statBanner:"AutoLaser"
+//         });
+//     }
+// });
+
+// Crafty.c("Weapon_MissleLauncher",{
+//     init:function(){
+//         this.addComponent("Weapon")
+//         .Weapon({
+//             name:"MissileLauncher1",
+//             canBeFired: true,
+//             isAuto: false,
+//             dmg:3,
+//             speed:5,
+//             speedMax:40,
+//             accel:0.6,
+//             cooldownCounter:34,
+//             fireInterval:34,
+//             percent:100,
+//             statBanner:"Missile Launcher"
+//         })
+//     }
+// });
+
 Crafty.c("Weapon1",{
     init:function(){
         this

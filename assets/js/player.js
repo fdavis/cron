@@ -18,52 +18,54 @@ Crafty.c("Player",{
     },
     lives:3,
     score:0,
-    weapons:[
-                {
-                    name:"AutoLaser",
-                    canBeFired: true,
-                    isAuto: true,
-                    coolingRate: .5,
-                    heatingRate: 4,
-                    heat: 0,
-                    dmg:1,
-                    speed:25,
-                    speedMax:25,
-                    accel:0,
-                    // cooldownCounter:9,
-                    // fireInterval:9,
-                    fireRate:5,
-                    percent:0,
-                    statBanner:"AutoLaser"
-                },
-                {
-                    name:"MissileLauncher1",
-                    canBeFired: true,
-                    isAuto: false,
-                    dmg:3,
-                    speed:5,
-                    speedMax:20,
-                    accel:0.3,
-                    cooldownCounter:34,
-                    fireInterval:34,
-                    percent:100,
-                    statBanner:"Missile Launcher"
-                },
-                {
-                    name:"Laser_Wave",
-                    canBeFired: true,
-                    isAuto: false,
-                    dmg:2,
-                    speed:19,
-                    speedMax:19,
-                    bullletCollision:false,
-                    accel:0,
-                    cooldownCounter:22,
-                    fireInterval:22,
-                    percent:100,
-                    statBanner:"Laser Wave"
-                }
-            ],
+    weapons:[],
+    // [
+    //             allTheWeapons.AutoLaser,
+    //             // Crafty.e('Weapon_AutoLaser'),
+    //             // {
+    //             //     name:"AutoLaser",
+    //             //     canBeFired: true,
+    //             //     isAuto: true,
+    //             //     coolingRate: .5,
+    //             //     heatingRate: 4,
+    //             //     heat: 0,
+    //             //     dmg:1,
+    //             //     speed:25,
+    //             //     speedMax:25,
+    //             //     accel:0,
+    //             //     // cooldownCounter:9,
+    //             //     // fireInterval:9,
+    //             //     fireRate:5,
+    //             //     percent:0,
+    //             //     statBanner:"AutoLaser"
+    //             // },
+    //                 allTheWeapons.MissileLauncher1,
+    //                 // name:"MissileLauncher1",
+    //                 // canBeFired: true,
+    //                 // isAuto: false,
+    //                 // dmg:3,
+    //                 // speed:5,
+    //                 // speedMax:20,
+    //                 // accel:0.3,
+    //                 // cooldownCounter:34,
+    //                 // fireInterval:34,
+    //                 // percent:100,
+    //                 // statBanner:"Missile Launcher"
+    //             {
+    //                 name:"Laser_Wave",
+    //                 canBeFired: true,
+    //                 isAuto: false,
+    //                 dmg:2,
+    //                 speed:19,
+    //                 speedMax:19,
+    //                 bullletCollision:false,
+    //                 accel:0,
+    //                 cooldownCounter:22,
+    //                 fireInterval:22,
+    //                 percent:100,
+    //                 statBanner:"Laser Wave"
+    //             }
+    //         ],
     currentWeapon:0,
     maxWeapon:3,
     bigWeapon:{
@@ -87,8 +89,12 @@ Crafty.c("Player",{
     preparing:true,
     bounce:false,
     init:function(){
-     
         var stage = $('#cr-stage');
+        this.weapons = [
+                Crafty.e("Weapon").Weapon(allTheWeapons.AutoLaser),
+                Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
+                Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
+            ];
         this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
         this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
@@ -235,7 +241,7 @@ Crafty.c("Player",{
                 x:this.x,
                 y:this.y
             });
-            console.log('before player hurt for:' + dmg + ' hull' + this.hp.current + ' shield' + this.shield.current);
+
             if(this.shield.current <= 0){
                 this.hp.current -= dmg;
             }else{
@@ -246,7 +252,7 @@ Crafty.c("Player",{
                     this.shield.current = 0;
                 }
             } 
-            console.log('after player hurt for:' + dmg + ' hull' + this.hp.current + ' shield' + this.shield.current);
+
             // Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })

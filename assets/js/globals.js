@@ -14,3 +14,7 @@ $(document).mouseup( function() {
   --mouseDown;
   if(mouseDown < 0) mouseDown = 0;
 });
+
+
+// should be loaded from weapons.json in the loader
+var allTheWeapons = {};

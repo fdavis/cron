@@ -1,0 +1,58 @@
+{
+   "AutoLaser":{
+      "name":"AutoLaser",
+      "canBeFired":true,
+      "isAuto":true,
+      "coolingRate":1,
+      "heatingRate":4,
+      "heat":0,
+      "dmg":1,
+      "speed":25,
+      "speedMax":25,
+      "accel":0,
+      "fireRate":3,
+      "percent":0,
+      "statBanner":"AutoLaser"
+   },
+   "MissileLauncher1":{
+      "name":"MissileLauncher1",
+      "canBeFired":true,
+      "isAuto":false,
+      "dmg":3,
+      "speed":5,
+      "speedMax":40,
+      "accel":0.6,
+      "cooldownCounter":34,
+      "fireInterval":34,
+      "percent":100,
+      "statBanner":"Missile Launcher"
+   },
+   "Laser_Wave":{
+     "name":"Laser_Wave",
+     "canBeFired": true,
+     "isAuto": false,
+     "dmg":2,
+     "speed":19,
+     "speedMax":19,
+     "bulletCollision":false,
+     "accel":0,
+     "cooldownCounter":22,
+     "fireInterval":22,
+     "percent":100,
+     "statBanner":"Laser Wave"
+   },
+   "Laser1":{
+     "name":"Weapon1",
+     "canBeFired": true,
+     "isAuto": false,
+     "dmg":1,
+     "speed":15,
+     "speedMax":15,
+     "bulletCollision":true,
+     "accel":0,
+     "cooldownCounter":7,
+     "fireInterval":7,
+     "percent":100,
+     "statBanner":"Laser"
+   }
+}
