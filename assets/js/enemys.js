@@ -85,8 +85,16 @@ Crafty.c("Enemy",{
                 });
             }
         })
+        
+    }
+});
+
+//container class for enemies that shoot
+Crafty.c("Shooter", {
+    init:function(){
+        this.weapon = Crafty.e("Weapon").Weapon(allTheWeapons.Laser1);
         // moved to enemy for now ... need to refactor some how
-        .bind("Shoot",function(speed){
+        this.bind("Shoot",function(speed){
             var dir = dir || {x: 0, y: -1};
             var weapon = {
                     name:"Weapon1",
@@ -106,6 +114,8 @@ Crafty.c("Enemy",{
                 yaccel: weapon.accel * dir.y,
                 ymax: weapon.speedMax * dir.y
             });
+            // FIXME make these adjustments more generic so they will fit well on any ship
+            // May take ship by ship tinkering :(
             bullet.attr({
                 x: this._x+this._w/2+bullet.w*3/4,
                 y: this._y+this._h-bullet.h/2,
@@ -113,6 +123,7 @@ Crafty.c("Enemy",{
             });  
         });
     }
+
 });
 
 Crafty.c("SpaceJunk",{
@@ -250,7 +261,7 @@ Crafty.c("Level1",{
     init:function(){
         var player = Crafty("Player");
         var x = 0;
-        this.addComponent("Enemy","ship9")
+        this.addComponent("Enemy","ship9","Shooter")
         .origin("center")
         .attr({
             rotation:180,
@@ -293,7 +304,7 @@ Crafty.c("Level2",{
     init:function(){
         var player = Crafty("Player");
         var x = 0;
-        this.addComponent("Enemy","ship10")
+        this.addComponent("Enemy","ship10","Shooter")
         .origin("center")
         .attr({
             rotation:180,
