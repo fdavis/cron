@@ -13,25 +13,12 @@ Crafty.scene("Loading",function(){
     
     //Select DOM elements
     var bar = $('#load');
-    var button = $('.button');
+    var button = $('#launchButton');
     var text = bar.find('.text');
     
     $('#interface').hide();
     //Setup progressbar
     text.text("Loading ...");
-
-    // Load some jsons
-    // game_path
-    // allTheWeapons = jQuery.parseJSON(game_path +  "assets/jsons/weapons.json");
-    // var weapJsonLoaded = false;
-    // var loaderLoaded = false;
-    // $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
-    //     console.log(data);
-    //     var weapJsonLoaded = true;
-    //     allTheWeapons = data;
-    //     if(loaderLoaded) button.show();
-    //     console.log('weapons loaded call back complete');
-    // });
 
     bar.progressbar({
         value:0
@@ -53,16 +40,7 @@ Crafty.scene("Loading",function(){
 
     Crafty.load(toLoad,
         function() {
-            //Everything is loaded, load my jsons...?
-            // $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
-            //     allTheWeapons = data;
-            //     bar.fadeOut(1000, function(){
-            //         button.show();
-            //     });
-            // });
             bar.fadeOut(1000, function(){
-                // if(weapJsonLoaded) button.show();
-                // var loaderLoaded = true;
                 button.show();
             });
             
@@ -169,10 +147,12 @@ Crafty.scene("Level1",function(){
             // update the text of the weapon status bar
             if (false == player.weapons[i].isAuto){
                 player.weapons[i].percent = Math.round(player.weapons[i].cooldownCounter / player.weapons[i].fireInterval * 100);
-                infos.weapon[i].text(player.weapons[i].statBanner + " " + chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%');
+                infos.weapon[i].text(player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "" +
+                    player.weapons[i].statBanner + " " + chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%');
             } else{
                 player.weapons[i].percent = Math.round(player.weapons[i].heat);
-                infos.weapon[i].text(player.weapons[i].statBanner + ' Heat: ' + player.weapons[i].percent + '%');
+                infos.weapon[i].text(player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "" +
+                    player.weapons[i].statBanner + ' Heat: ' + player.weapons[i].percent + '%');
             }
             // update the progress fill in
             bars.weapon[i].progressbar({ value:player.weapons[i].percent });
@@ -184,32 +164,14 @@ Crafty.scene("Level1",function(){
             }
         }
         player.bigWeapon.percent = Math.round(player.bigWeapon.cooldownCounter / player.bigWeapon.fireInterval * 100);
-
-        //display the values
-
-        
-        // infos.weapon2.text('Weapon 2 ' + chargeOrReady(player.weapons[1].percent) + ': '+ player.weapons[1].percent + '%');
-        // infos.weapon3.text('Weapon 3 ' + chargeOrReady(player.weapons[2].percent) + ': '+ player.weapons[2].percent + '%');
-        infos.bigWeapon.text('Bomb ' + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
+        infos.bigWeapon.text(player.bigWeapon.has("BallisticWeapon")? "(" + player.bigWeapon.ammo + ") " : "" +
+            player.bigWeapon.statBanner + " " + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
 
         infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
         infos.score.text("Score: " + player.score);
         infos.lives.text("Lives: " + player.lives);
         infos.fps.text("FPS: " + myFPS);
-        
-        //Update progress bars
-        // bars.weapon2.progressbar({
-        //     value:player.weapons[1].percent
-        // });
-        // bars.weapon3.progressbar({
-        //     value:player.weapons[2].percent
-        // });
-
-        // selected weapon highlighter
-        // for (var i = 0; i < player.maxWeapon; i++){
-            
-        // }
 
         bars.bigWeapon.progressbar({
             value:player.bigWeapon.percent
@@ -232,9 +194,16 @@ Crafty.scene("Level1",function(){
         
 
     });
+
     //Bind global Event Show Text
     Crafty.bind("ShowText",function(text){
-        infos.alert.text(text).show().effect('pulsate',500)
+        infos.alert.text(text).show().effect('pulsate','easeInExpo',500)
+    });
+    Crafty.bind("TempShowText",function(text){
+        // infos.alert.text(obj.text).show().effect('pulsate','easeInExpo',500,obj.func);
+        infos.alert.text(text).show().effect('pulsate','easeInExpo',500,function(){
+            Crafty.trigger("HideText");
+        });
     });
     Crafty.bind("HideText",function(){
         infos.alert.text("").hide(); 
@@ -249,5 +218,4 @@ Crafty.scene("Level1",function(){
     //Play background music and repeat
     // Crafty.audio.play("space",-1);
     Crafty.trigger("UpdateStats");
-  
 });

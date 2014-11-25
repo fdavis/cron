@@ -152,6 +152,7 @@ div.text.center{
     border:2px ridge #AAAAAA;
     background: #333333;
 }
+
 .button{
     cursor:pointer;
     display:none;
@@ -169,6 +170,14 @@ div.text.center{
     text-align: center;
     line-height: 30px;
     bottom:20px;
+}
+
+.pause.button{
+    width: 40px;
+    height: 12px;
+    bottom: none;
+    top: 5px;
+    line-height: 100%;
 }
 #loading .bars{
     width:100%;

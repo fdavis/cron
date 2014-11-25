@@ -1,5 +1,3 @@
-            //to use the showtext
-            // Crafty.trigger("ShowText","Weapon Overheated!");
 Crafty.c("Player",{
     hp:{
         current:10,
@@ -16,71 +14,13 @@ Crafty.c("Player",{
         max:100,
         percent:0
     },
-    lives:3,
+    paused:false,
+    lives:1,
     score:0,
     weapons:[],
-    // [
-    //             allTheWeapons.AutoLaser,
-    //             // Crafty.e('Weapon_AutoLaser'),
-    //             // {
-    //             //     name:"AutoLaser",
-    //             //     canBeFired: true,
-    //             //     isAuto: true,
-    //             //     coolingRate: .5,
-    //             //     heatingRate: 4,
-    //             //     heat: 0,
-    //             //     dmg:1,
-    //             //     speed:25,
-    //             //     speedMax:25,
-    //             //     accel:0,
-    //             //     // cooldownCounter:9,
-    //             //     // fireInterval:9,
-    //             //     fireRate:5,
-    //             //     percent:0,
-    //             //     statBanner:"AutoLaser"
-    //             // },
-    //                 allTheWeapons.MissileLauncher1,
-    //                 // name:"MissileLauncher1",
-    //                 // canBeFired: true,
-    //                 // isAuto: false,
-    //                 // dmg:3,
-    //                 // speed:5,
-    //                 // speedMax:20,
-    //                 // accel:0.3,
-    //                 // cooldownCounter:34,
-    //                 // fireInterval:34,
-    //                 // percent:100,
-    //                 // statBanner:"Missile Launcher"
-    //             {
-    //                 name:"Laser_Wave",
-    //                 canBeFired: true,
-    //                 isAuto: false,
-    //                 dmg:2,
-    //                 speed:19,
-    //                 speedMax:19,
-    //                 bullletCollision:false,
-    //                 accel:0,
-    //                 cooldownCounter:22,
-    //                 fireInterval:22,
-    //                 percent:100,
-    //                 statBanner:"Laser Wave"
-    //             }
-    //         ],
     currentWeapon:0,
     maxWeapon:3,
-    bigWeapon:{
-        name:"Bomb",
-        canBeFired: true,
-        isAuto: false,
-        dmg:10,
-        speed:2,
-        speedMax:2,
-        accel:0,
-        cooldownCounter:120,
-        fireInterval:120,
-        percent:100,
-        statBanner:"Bomb"
-    },
+    bigWeapon:{},
     powerups:{},
     ship:"ship1",
     shieldHandle:0,
@@ -95,6 +35,7 @@ Crafty.c("Player",{
                 Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
                 Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
             ];
+        this.bigWeapon = Crafty.e("Weapon").Weapon(allTheWeapons.Bomb);
         this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
         this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
@@ -130,23 +71,33 @@ Crafty.c("Player",{
             } else if(e.keyCode === Crafty.keys.SPACE){
                 if(this.preparing) return;
                 if(this.bigWeapon.canBeFired == true){
+                    //if no ammo then quit now
+                    if(this.bigWeapon.has("BallisticWeapon") && this.bigWeapon.ammo == 0) {
+                        Crafty.trigger("TempShowText",this.bigWeapon.statBanner + " is out of ammo!");
+                        return;
+                    }
                     this.bigWeapon.canBeFired = false;
                     this.bigWeapon.cooldownCounter = 0;
                     this.shoot({x:0,y:1},this.bigWeapon);
                 }
+            } else if(e.keyCode === Crafty.keys.P){
+                if(this.paused) {
+                    Crafty.trigger("HideText");
+                } else {
+                    Crafty.trigger("ShowText","PAUSED!");
+                }
+                this.paused = !this.paused;
+                Crafty.pause();
             }
         })
-        // .bind("KeyUp", function(e) {
-        //     if(e.keyCode === Crafty.keys.SPACE){
-        //         keyDown = false;
-        //     } 
-        // })
-        // .bind("Click", function() {
-        //     console.log("Clicked!!");
-        // })
         .bind("canvasMouseDown", function (e) {
             if(this.preparing) return;
             if(this.weapons[this.currentWeapon].canBeFired == true) {
+                //if no ammo then quit now
+                if(this.weapons[this.currentWeapon].has("BallisticWeapon") && this.weapons[this.currentWeapon].ammo == 0) {
+                    Crafty.trigger("TempShowText",this.weapons[this.currentWeapon].statBanner + " is out of ammo!");
+                    return;
+                }
                 // if auto then call heat weapon
                 if(false == this.weapons[this.currentWeapon].isAuto){
                     this.weapons[this.currentWeapon].canBeFired = false;
@@ -251,8 +202,8 @@ Crafty.c("Player",{
                     this.hp.current += this.shield.current;
                     this.shield.current = 0;
                 }
-            } 
-
+            }
+            if(this.hp.current <= this.hp.current * 0.3) Crafty.trigger("TempShowText","Hull Breach Imminent!");
             // Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })
@@ -279,20 +230,15 @@ Crafty.c("Player",{
     },
     reset:function(){
         this.hp = {
-            current:10,
-            max:10,
+            current:this.hp.max,
+            max:this.hp.max,
             percent:100
         };
         this.shield = {
-            current:10,
-            max:10,
+            current:this.shield.max,
+            max:this.shield.max,
             percent:100
         };
-        this.heat = {
-            current:0,
-            max:100,
-            percent:0
-        }
         // reset all guns
         for(var i = 0; i < this.maxWeapon; i++){
             if(false == this.weapons[i].isAuto){
@@ -316,8 +262,10 @@ Crafty.c("Player",{
         this.preparing = true;
     },
     shoot:function(dir, weapon){
-        var dir = dir || {x: 0, y: 1};
-        var weapon = weapon || this.weapons[0];//FIXME need to make default do nothing
+        if(arguments.length < 2) return;
+        var dir = dir;
+        var weapon = weapon;//could use more validation... ?
+
         // want bullet to face direction of travel
         var myrot = Math.atan(dir.x / dir.y)/(Math.PI/180);
         if( dir.y < 0){
@@ -355,6 +303,8 @@ Crafty.c("Player",{
             x: this._x+this._w/2-bullet.w/2,
             y: this._y+this._h/2-bullet.h/2
         });
+        //decrement the weapon ammo
+        if(weapon.has("BallisticWeapon")) weapon.shot();
     },
     die:function(){
         Crafty.e("RandomExplosion").attr({
@@ -379,6 +329,7 @@ Crafty.c("Player",{
         weapon.heat += weapon.heatingRate;
         if (weapon.heat > 100) {
             weapon.canBeFired = false;
+            Crafty.trigger("TempShowText","Weapon Overheated!");
         }
     }
 });
