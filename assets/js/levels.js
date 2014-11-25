@@ -54,18 +54,17 @@ Crafty.scene("Loading",function(){
     Crafty.load(toLoad,
         function() {
             //Everything is loaded, load my jsons...?
-            $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
-                allTheWeapons = data;
-                bar.fadeOut(1000, function(){
-                    button.show();
-                });
-            });
-            // bar.fadeOut(1000);
-            // ,function(){
-            //     // if(weapJsonLoaded) button.show();
-            //     // var loaderLoaded = true;
-                
+            // $.getJSON( game_path +  "assets/jsons/weapons.json", function( data ) {
+            //     allTheWeapons = data;
+            //     bar.fadeOut(1000, function(){
+            //         button.show();
+            //     });
             // });
+            bar.fadeOut(1000, function(){
+                // if(weapJsonLoaded) button.show();
+                // var loaderLoaded = true;
+                button.show();
+            });
             
         },
         function(e) {
