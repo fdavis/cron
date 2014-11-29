@@ -20,23 +20,23 @@ Crafty.sprite(game_path + "assets/img/ships.png",{
     ship16:[340,48,67,47]
 });
 Crafty.sprite(60,60,game_path + "assets/img/player_shield.png",{
-    player_shield:[0,0] 
+    player_shield:[0,0]
 });
 
 Crafty.sprite(5,13,game_path + "assets/img/weapon1_small.png",{
-    laser1:[0,0] 
+    laser1:[0,0]
 });
 Crafty.sprite(5,13,game_path + "assets/img/missile_small.png",{
-    missile1:[0,0] 
+    missile1:[0,0]
 });
 Crafty.sprite(20,52,game_path + "assets/img/missile_large.png",{
-    missile2:[0,0] 
+    missile2:[0,0]
 });
 Crafty.sprite(27,36,game_path + "assets/img/laser2.png",{
-    laser2:[0,0] 
+    laser2:[0,0]
 });
 Crafty.sprite(40,53,game_path + "assets/img/laser_wave.png",{
-    laser_wave:[0,0] 
+    laser_wave:[0,0]
 });
 Crafty.sprite(29,game_path + "assets/img/dmg.png",{
     dmg:[0,0]

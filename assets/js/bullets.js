@@ -12,25 +12,25 @@ Crafty.c("Bullet",{
         this.addComponent("2D","Canvas","Collision")
         .bind("EnterFrame",function(){
             if(this.x > Crafty.viewport.width+this.w ||
-                this.x < -this.w || 
-                this.y < -this.h || 
+                this.x < -this.w ||
+                this.y < -this.h ||
                 this.y > Crafty.viewport.height+this.h){
                 this.destroy();
             }
         })
         .bind("EnterFrame", function() {
             this.xspeed += this.xaccel;
-            if( Math.abs(this.xspeed) >= Math.abs(this.xmax) ){ 
+            if( Math.abs(this.xspeed) >= Math.abs(this.xmax) ){
                 this.xspeed = this.xmax;
                 this.xaccel = 0;
             }
             this.yspeed += this.yaccel;
-            if( Math.abs(this.yspeed) >= Math.abs(this.ymax) ){ 
+            if( Math.abs(this.yspeed) >= Math.abs(this.ymax) ){
                 this.yspeed = this.ymax;
                 this.yaccel = 0;
             }
             this.x += this.xspeed;
-            this.y -= this.yspeed; 
+            this.y -= this.yspeed;
         })
         .onHit("Bullet",function(ent){
             var that = ent[0].obj;
@@ -58,7 +58,7 @@ Crafty.c("Weapon1",{
         this
         .addComponent("Bullet","laser1")
         Crafty.audio.play("laser1",1,0.8);
-    } 
+    }
 });
 
 Crafty.c("AutoLaser",{
@@ -66,7 +66,7 @@ Crafty.c("AutoLaser",{
         this
         .addComponent("Bullet","laser1")
         Crafty.audio.play("laser1",1,0.8);
-    } 
+    }
 });
 
 Crafty.c("MissileLauncher1",{
@@ -74,7 +74,7 @@ Crafty.c("MissileLauncher1",{
         this
         .addComponent("Bullet","missile1")
         Crafty.audio.play("laser1",1,0.8);
-    } 
+    }
 });
 
 
@@ -92,7 +92,7 @@ Crafty.c("Bomb",{
             });
         });
         Crafty.audio.play("laser1",1,0.8);
-    } 
+    }
 });
 
 Crafty.c("Weapon2",{
@@ -100,7 +100,7 @@ Crafty.c("Weapon2",{
         this
         .addComponent("Bullet","laser2");
         Crafty.audio.play("laser2",1,0.8);
-    } 
+    }
 });
 
 Crafty.c("Laser_Wave",{

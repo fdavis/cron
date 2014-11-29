@@ -2,9 +2,9 @@ Crafty.c("PowerUp",{
     init:function(){
         this.requires("2D,Canvas,Collision")
         .onHit("Player",function(ent){
-            
+
             ent[0].obj.trigger(this.effect,this.value);
-            this.destroy(); 
+            this.destroy();
         })
         .bind("EnterFrame",function(){
             this.y+=2;

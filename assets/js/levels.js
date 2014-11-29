@@ -10,51 +10,52 @@ Crafty.scene("Loading",function(){
     }
     //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
-    
+
     //Select DOM elements
     var bar = $('#load');
     var button = $('#launchButton');
     var text = bar.find('.text');
-    
+
     $('#interface').hide();
     //Setup progressbar
     text.text("Loading ...");
 
     bar.progressbar({
         value:0
-   
+
     });
     //Bind click event on button
     button.live('click',function(){
         //Start scene level 1
-        Crafty.scene("Level1");  
+        Crafty.scene("Level1");
     });
-  
+
     $('.skip').live('click',function(){
         bar.fadeOut(1000,function(){
             button.show();
         });
-            
+
     });
-    
+
+    model = Crafty.e("Model");
 
     Crafty.load(toLoad,
         function() {
             bar.fadeOut(1000, function(){
                 button.show();
             });
-            
+
         },
         function(e) {
             var src = e.src ||"";
-          
+
             //update progress
             text.text("Loading "+src.substr(src.lastIndexOf('/') + 1).toLowerCase()+" Loaded: "+~~e.percent+"%");
             bar.progressbar({
                 value:~~e.percent
             });
-       
-      
+
+
         },
         function(e) {
             //uh oh, error loading
@@ -72,7 +73,7 @@ function(){
 });
 function chargeOrReady(perc){
     if (perc == 100){ return 'Ready'}
-    return 'Charge'; 
+    return 'Charge';
 }
 //Level 1 Scene
 Crafty.scene("Level1",function(){
@@ -80,7 +81,7 @@ Crafty.scene("Level1",function(){
     $('#interface').show();
     //Setup background of level
     Crafty.background("url(" + game_path + "/assets/img/bg.png)");
-    
+
     $('.level').text('Level: 1');
 
     //Get the Interface elements
@@ -98,7 +99,7 @@ Crafty.scene("Level1",function(){
     bars.weapon[0].addClass('green');
     bars.weapon[1].addClass('green');
     bars.weapon[2].addClass('green');
-    
+
     var infos = {
         lives: $('.lives'),
         score: $('.score'),
@@ -113,14 +114,14 @@ Crafty.scene("Level1",function(){
     }
     var myFPS = 0;
 
-    var spotEnemys = function(frame){   
+    var spotEnemys = function(frame){
         //Spot each 50th Fram one Asteroid
- 
+
         if(frame % 50 == 0 && Crafty("Asteroid").length < 4){
-            Crafty.e("Asteroid"); 
+            Crafty.e("Asteroid");
         }
         if(frame % 70 == 0 && Crafty("Kamikaze").length < 2){
-            Crafty.e("Kamikaze");   
+            Crafty.e("Kamikaze");
         }
         if(frame % 80 == 0  && Crafty("Level1").length < 2){
             Crafty.e("Level1");
@@ -142,7 +143,7 @@ Crafty.scene("Level1",function(){
         //calculate percents
         player.hp.percent = Math.round(player.hp.current/player.hp.max * 100);
         player.shield.percent = Math.round(player.shield.current/player.shield.max * 100);
-        
+
         for(var i = 0; i < player.maxWeapon; ++i){
             // update the text of the weapon status bar
             if (false == player.weapons[i].isAuto){
@@ -169,7 +170,7 @@ Crafty.scene("Level1",function(){
 
         infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
-        infos.score.text("Score: " + player.score);
+        infos.score.text("Score: " + model.getScore());
         infos.lives.text("Lives: " + player.lives);
         infos.fps.text("FPS: " + myFPS);
 
@@ -188,10 +189,10 @@ Crafty.scene("Level1",function(){
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
             Crafty.trigger("canvasMouseDown", e);
     });
-    
+
     //Bind UpdateStats Event
     Crafty.bind("UpdateStats",function(){
-        
+
 
     });
 
@@ -206,14 +207,14 @@ Crafty.scene("Level1",function(){
         });
     });
     Crafty.bind("HideText",function(){
-        infos.alert.text("").hide(); 
+        infos.alert.text("").hide();
     });
     //Global Event for Game Over
     Crafty.bind("GameOver",function(score){
         Crafty.trigger("ShowText","Game Over!");
         Crafty.audio.stop();
         Crafty.audio.play("gameover",-1);
-            
+
     });
     //Play background music and repeat
     // Crafty.audio.play("space",-1);

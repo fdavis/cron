@@ -50,53 +50,53 @@ Crafty.extend({
 	* @see Crafty.assets
 	*/
     load: function (data, oncomplete, onprogress, onerror) {
-            
+
         var i = 0, l = data.length, current, obj, total = l, j = 0, ext = "" ;
-  
+
         //Progress function
         function pro(){
             var src = this.src;
-           
+
             //Remove events cause audio trigger this event more than once(depends on browser)
-            if (this.removeEventListener) {  
-                this.removeEventListener('canplaythrough', pro, false);     
+            if (this.removeEventListener) {
+                this.removeEventListener('canplaythrough', pro, false);
             }
-           
+
             ++j;
             //if progress callback, give information of assets loaded, total and percent
-            if (onprogress) 
+            if (onprogress)
                 onprogress({
-                    loaded: j, 
-                    total: total, 
+                    loaded: j,
+                    total: total,
                     percent: (j / total * 100),
                     src:src
                 });
-				
+
             if(j === total && oncomplete) oncomplete();
         };
         //Error function
         function err(){
             var src = this.src;
-            if (onerror) 
+            if (onerror)
                 onerror({
-                    loaded: j, 
-                    total: total, 
+                    loaded: j,
+                    total: total,
                     percent: (j / total * 100),
                     src:src
                 });
-           		
+
             j++;
             if(j === total && oncomplete) oncomplete();
         };
-           
-        for (; i < l; ++i) {       
+
+        for (; i < l; ++i) {
             current = data[i];
             ext = current.substr(current.lastIndexOf('.') + 1).toLowerCase();
-           
-            obj = this.assets[current] || null;   
-          
-            if (Crafty.support.audio && Crafty.audio.supported[ext]) {   
-                
+
+            obj = this.assets[current] || null;
+
+            if (Crafty.support.audio && Crafty.audio.supported[ext]) {
+
                 if(!obj){
                     var name = current.substr(current.lastIndexOf('/') + 1).toLowerCase();
                     obj = Crafty.audio.audioElement();
@@ -104,35 +104,35 @@ Crafty.extend({
                     obj.src = current;
                     obj.preload = "auto";
                     obj.volume = Crafty.audio.volume;
-                    if (!Crafty.assets[current]) Crafty.assets[current] = obj; 
+                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;
                     Crafty.audio.sounds[name] = {
                         obj:obj,
                         played:0
-                    } 
+                    }
                 }
-        
+
                 //addEventListener is supported on IE9 , Audio as well
-                if (obj.addEventListener) {  
-                    obj.addEventListener('canplaythrough', pro, false);     
+                if (obj.addEventListener) {
+                    obj.addEventListener('canplaythrough', pro, false);
                 }
-                   
-                 
-            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") { 
+
+
+            } else if (ext === "jpg" || ext === "jpeg" || ext === "gif" || ext === "png") {
                 if(!obj) {
                     obj = new Image();
-                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;   
+                    if (!Crafty.assets[current]) Crafty.assets[current] = obj;
                 }
                 obj.onload=pro;
                 obj.src = current; //setup src after onload function Opera/IE Bug
-             
+
             } else {
                 total--;
                 continue; //skip if not applicable
             }
             obj.onerror = err;
         }
-       
-       
+
+
     },
     /**@
 	* #Crafty.modules

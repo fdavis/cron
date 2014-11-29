@@ -7,10 +7,10 @@
 // another caveat...: if you press left mouse then right mouse, right brings up context menu which then hides the mouse up events from the document...
 // so maybe this needs a reset of some kind? >.>
 var mouseDown = 0;
-$(document).mousedown( function() { 
+$(document).mousedown( function() {
   ++mouseDown;
 });
-$(document).mouseup( function() { 
+$(document).mouseup( function() {
   --mouseDown;
   if(mouseDown < 0) mouseDown = 0;
 });

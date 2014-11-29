@@ -21,7 +21,7 @@ Crafty.extend({
                     this.supported[i] = false;
                 }
             }
-          
+
         },
         audioElement:function(){
             //IE does not support Audio Object
@@ -30,9 +30,9 @@ Crafty.extend({
         add:function(id,url){
             Crafty.support.audio = !!this.audioElement().canPlayType; //Setup audio support
             if (!Crafty.support.audio) return;
-            
+
             this.canPlay(); //Setup supported Extensions
-            
+
             var audio,ext,path;
             if(arguments.length === 1 && typeof id === "object"){
                 for(var i in id){
@@ -45,76 +45,76 @@ Crafty.extend({
                         ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
                         if(this.supported[ext]){
                             audio.src = path;
-                            if (!Crafty.assets[path]) Crafty.assets[path] = audio; 
+                            if (!Crafty.assets[path]) Crafty.assets[path] = audio;
                             this.sounds[i] = {
                                 obj:audio,
                                 played:0
-                            } 
+                            }
                         }
-                        
+
                     }
-                }          
+                }
             }
             if(typeof id === "string"){
                 audio = this.audioElement();
                 audio.id = id;
                 audio.preload = "auto";
                 audio.volume = Crafty.audio.volume;
-              
+
                 if(typeof url === "string"){
                     ext = url.substr(url.lastIndexOf('.') + 1).toLowerCase();
                     if(this.supported[ext]){
                         audio.src = url;
-                        if (!Crafty.assets[url]) Crafty.assets[url] = audio;  
+                        if (!Crafty.assets[url]) Crafty.assets[url] = audio;
                         this.sounds[id] = {
                             obj:audio,
                             played:0
-                        } 
-                       
+                        }
+
                     }
-                  
+
                 }
-             
+
                 if(typeof url === "object"){
-                    for(src in url){   
+                    for(src in url){
                         audio = this.audioElement();
                         audio.id = id;
                         audio.preload = "auto";
                         audio.volume = Crafty.audio.volume;
                         path = url[src];
-                        ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();	
+                        ext = path.substr(path.lastIndexOf('.') + 1).toLowerCase();
                         if(this.supported[ext]){
                             audio.src = path;
-                            if (!Crafty.assets[path]) Crafty.assets[path] = audio;   
+                            if (!Crafty.assets[path]) Crafty.assets[path] = audio;
                             this.sounds[id] = {
                                 obj:audio,
                                 played:0
-                            } 
+                            }
                         }
-                       
+
                     }
                 }
-               
-               
+
+
             }
-          
+
 
         },
         play:function(id,repeat,volume){
             return; //TODO FIXME when you want to hear the game again ...
             if(repeat == 0 || !Crafty.support.audio || !this.sounds[id]) return;
             var s = this.sounds[id];
-            s.obj.volume = volume || Crafty.audio.volume ;   
-            if(s.obj.currentTime) s.obj.currentTime = 0;   
-            s.obj.play(); 
+            s.obj.volume = volume || Crafty.audio.volume ;
+            if(s.obj.currentTime) s.obj.currentTime = 0;
+            s.obj.play();
             s.played ++;
             s.obj.onended = function(){
                 if(s.played < repeat || repeat == -1){
                     if(this.currentTime) this.currentTime = 0;
-                    this.play(); 
+                    this.play();
                     s.played ++;
                 }
-            };    
+            };
         },
         stop:function(id){
             if(!Crafty.support.audio) return;
@@ -125,7 +125,7 @@ Crafty.extend({
                     if(!s.obj.paused) s.obj.pause();
                 }
             }
-            if(!this.sounds[id]) return;    
+            if(!this.sounds[id]) return;
             s = this.sounds[id];
             if(!s.obj.paused) s.obj.pause();
         },
@@ -141,12 +141,12 @@ Crafty.extend({
             }else{
                 for(var i in this.sounds){
                     s = this.sounds[i];
-                    if(s.obj.currentTime && s.obj.currentTime > 0) 
+                    if(s.obj.currentTime && s.obj.currentTime > 0)
                         this.sounds[i].obj.play();
                 }
-                this.muted = false; 
+                this.muted = false;
             }
-         
+
         }
-    } 
+    }
 });

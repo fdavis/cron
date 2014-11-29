@@ -12,12 +12,12 @@ Crafty.c("Enemy",{
         this.splashedBy = [];
         this.playerID = Crafty('Player');
         //All enemies will get same basic components
-        this.requires("2D,Canvas,Collision")  
+        this.requires("2D,Canvas,Collision")
         //Destroy all enemies if they leave the viewport
         .bind("EnterFrame",function(){
             if(this.x > Crafty.viewport.width + this.w ||
-                this.x < -this.w || 
-                this.y < -this.h || 
+                this.x < -this.w ||
+                this.y < -this.h ||
                 this.y > Crafty.viewport.height +this.h){
                 this.destroy();
             }
@@ -85,7 +85,7 @@ Crafty.c("Enemy",{
                 });
             }
         })
-        
+
     }
 });
 
@@ -120,7 +120,7 @@ Crafty.c("Shooter", {
                 x: this._x+this._w/2+bullet.w*3/4,
                 y: this._y+this._h-bullet.h/2,
                 rotation: this._rotation
-            });  
+            });
         });
     }
 
@@ -144,7 +144,7 @@ Crafty.c("Asteroid",{
     init:function(){
         var speed =  Crafty.math.randomInt(1,2); //get Random moving speed
         var direction = Crafty.math.randomInt(-speed,speed); //Get random moving direction
-      
+
         //Asteroid requires Enemy so it gets their functions and behavior
         this.requires("Enemy,asteroid64,Tween,SpaceJunk")
         .origin("center")
@@ -181,7 +181,7 @@ Crafty.c("Asteroid",{
                     y:this.y
                 });
             }
-         
+
         });
     }
 });
@@ -206,7 +206,7 @@ Crafty.c("SmallAsteroid",{
         .attr({
             rotation:Crafty.math.randomInt(0,360)
         });
-       
+
     }
 });
 
@@ -237,16 +237,16 @@ Crafty.c("Kamikaze",{
             } else{
                 if(this.x < player.x)
                     this.x += xspeed;
-                
+
                 if(this.x > player.x)
                     this.x -= xspeed;
             }
-        
+
             if(this.x == player.x){
                 attacking = true;
                 xspeed = Math.round(xspeed/2); //half x adjust on descent
             }
-            
+
             if(attacking)
                 this.y += 4;
         });
@@ -271,7 +271,7 @@ Crafty.c("Level1",{
         .bind("EnterFrame",function(frame){
             player = Crafty(player[0]);
             x = Math.abs((this.x+this._w/2)-player.x);
-        
+
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }
@@ -293,7 +293,7 @@ Crafty.c("Level1",{
         //         rotation: this._rotation,
         //         xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
         //         yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
-        //     });   
+        //     });
         // });
     }
 });
@@ -318,8 +318,8 @@ Crafty.c("Level2",{
                 this.x++;
             if(this.x > player.x)
                 this.x--;
-             
-        
+
+
             if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }

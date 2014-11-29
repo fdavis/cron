@@ -42,15 +42,15 @@ Crafty.c("Player",{
         .bind('Moved', function(from) {
             // Don't allow to move the player out of Screen
             if(this.x+this.w > Crafty.viewport.width ||
-                this.x+this.w < this.w || 
-                this.y+this.h-35 < this.h || 
+                this.x+this.w < this.w ||
+                this.y+this.h-35 < this.h ||
                 this.y+this.h+35 > Crafty.viewport.height || this.preparing){
                 this.attr({
-                    x:from.x, 
+                    x:from.x,
                     y:from.y
                 });
             }
-          
+
         })
         .bind("KeyDown", function(e) {
             // cycle the active weapon
@@ -122,7 +122,7 @@ Crafty.c("Player",{
         })
         .bind("EnterFrame",function(frame){
             if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
-                if(Crafty.lastEvent 
+                if(Crafty.lastEvent
                     && this.weapons[this.currentWeapon].canBeFired
                     && mouseDown > 0){
                     //fire if mouse is down and current weapon is auto fire
@@ -154,7 +154,7 @@ Crafty.c("Player",{
                 if(this.y < Crafty.viewport.height-this.h-Crafty.viewport.height/4){
                     this.preparing = false;
                     this.flicker=false;
-                  
+
                 }
             }
             for(var i = 0; i < this.weapons.length; i++){
@@ -174,7 +174,8 @@ Crafty.c("Player",{
 
         })
         .bind("Killed",function(points){
-            this.score += points;
+            model.incrScore(points);
+            // this.score += points;
             // Crafty.trigger("UpdateStats");
         })
         .bind("Hurt",function(dmg){
@@ -217,13 +218,13 @@ Crafty.c("Player",{
                 this.hp.current += val;
                 // Crafty.trigger("UpdateStats");
             }
-        
+
         })
         .bind("RestoreShield",function(val){
             if(this.shield.current < this.shield.max){
                 this.shield.current += val;
                 // Crafty.trigger("UpdateStats");
-            }  
+            }
         })
         .reset() /*Set initial points*/;
         return this;
@@ -315,7 +316,7 @@ Crafty.c("Player",{
         // Crafty.trigger("UpdateStats");
         if(this.lives <= 0){
             this.destroy();
-            Crafty.trigger("GameOver",this.score);
+            Crafty.trigger("GameOver",model.getScore);
         }else{
             this.reset();
         }

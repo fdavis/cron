@@ -13,7 +13,7 @@ Crafty.c("Weapon",{
     fireInterval:30,
     percent:100,
     cooldownCounter:5,
-    fireInterval:5,    
+    fireInterval:5,
     coolingRate: 1,
     heatingRate: 4,
     hasAmmo:false,
