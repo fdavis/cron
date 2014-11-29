@@ -16,7 +16,6 @@ Crafty.c("Player",{
     },
     paused:false,
     lives:1,
-    score:0,
     weapons:[],
     currentWeapon:0,
     maxWeapon:3,
@@ -172,11 +171,6 @@ Crafty.c("Player",{
                 }
             }
 
-        })
-        .bind("Killed",function(points){
-            model.incrScore(points);
-            // this.score += points;
-            // Crafty.trigger("UpdateStats");
         })
         .bind("Hurt",function(dmg){
             if(this.flicker) return;

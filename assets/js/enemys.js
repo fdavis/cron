@@ -4,13 +4,12 @@
 var powerUps = ["Heal","Shield"];
 //Basic enemy component
 Crafty.c("Enemy",{
-    playerID:null, //ID of player which has something todo with that enemy.
+    model:Crafty('Model'),
     //I guess this is shared??? see http://craftyjs.com/api/Crafty-c.html and https://github.com/craftyjs/Crafty/issues/327
     //is this messing up anything else >.> ??? \_(o-O)_/
     // splashedBy:[],//if splashed by a splash damage object, don't let it happen again
     init:function(){
         this.splashedBy = [];
-        this.playerID = Crafty('Player');
         //All enemies will get same basic components
         this.requires("2D,Canvas,Collision")
         //Destroy all enemies if they leave the viewport
@@ -25,7 +24,6 @@ Crafty.c("Enemy",{
         //Describe behavior on getting hit by Player Bullet
         .onHit("PlayerBullet",function(ent){
             var bullet = ent[0].obj;
-            this.playerID = bullet.playerID; //Which player hurt you
             this.trigger("Hurt",bullet.dmg); //Hurt the enemy with bullet damage
             bullet.destroy(); //Destroy the bullet
         })
@@ -73,8 +71,7 @@ Crafty.c("Enemy",{
                 x:this.x-this.w,
                 y:this.y-this.h
             });
-            //Trigger the player event to calculate points
-            Crafty('Player').trigger("Killed",this.points);
+            model.trigger("Scored",this.points);
             //Destroy the asteroid
             this.destroy();
             if(Crafty.math.randomInt(0, 100) > 70){

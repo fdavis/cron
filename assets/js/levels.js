@@ -146,14 +146,34 @@ Crafty.scene("Level1",function(){
 
         for(var i = 0; i < player.maxWeapon; ++i){
             // update the text of the weapon status bar
+            // FIXME after data binding this should work a lot cleaner and allow for more modifications easier
             if (false == player.weapons[i].isAuto){
                 player.weapons[i].percent = Math.round(player.weapons[i].cooldownCounter / player.weapons[i].fireInterval * 100);
-                infos.weapon[i].text(player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "" +
-                    player.weapons[i].statBanner + " " + chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%');
+                infos.weapon[i].text(
+                    player.weapons[i].statBanner + " " +
+                    (
+                        player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
+                        (player.weapons[i].percent >= 100 ? "Ready" : "Charge")
+                    )
+                );
             } else{
                 player.weapons[i].percent = Math.round(player.weapons[i].heat);
-                infos.weapon[i].text(player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "" +
-                    player.weapons[i].statBanner + ' Heat: ' + player.weapons[i].percent + '%');
+                infos.weapon[i].text(
+                    player.weapons[i].statBanner + " " +
+                    (
+                        player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
+                        (player.weapons[i].percent >= 100 ? "Cooling" : "Ready")
+                    )
+                );
+                // infos.weapon[i].text(
+                //         player.weapons[i].statBanner + " " +
+                //         (
+                //             player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
+                //             chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%'
+                //         )
+                //     );
+                // infos.weapon[i].text(player.weapons[i].has(("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "") +
+                //     player.weapons[i].statBanner + ' ' + player.weapons[i].percent + '%');
             }
             // update the progress fill in
             bars.weapon[i].progressbar({ value:player.weapons[i].percent });
@@ -165,8 +185,13 @@ Crafty.scene("Level1",function(){
             }
         }
         player.bigWeapon.percent = Math.round(player.bigWeapon.cooldownCounter / player.bigWeapon.fireInterval * 100);
-        infos.bigWeapon.text(player.bigWeapon.has("BallisticWeapon")? "(" + player.bigWeapon.ammo + ") " : "" +
-            player.bigWeapon.statBanner + " " + chargeOrReady(player.bigWeapon.percent) + ': '+ player.bigWeapon.percent + '%');
+        infos.bigWeapon.text(
+            player.bigWeapon.statBanner + " " +
+            (
+                player.bigWeapon.has("BallisticWeapon")? "(" + player.bigWeapon.ammo + ") " :
+                (player.bigWeapon.percent >= 100 ? "Cooling" : "Ready")
+            )
+        );
 
         infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
