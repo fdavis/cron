@@ -15,7 +15,7 @@ Crafty.c("Player",{
         percent:0
     },
     paused:false,
-    lives:1,
+    lives:3,
     weapons:[],
     currentWeapon:0,
     maxWeapon:3,
@@ -23,8 +23,6 @@ Crafty.c("Player",{
     powerups:{},
     ship:"ship1",
     shieldHandle:0,
-    bars:{},
-    infos:{},
     preparing:true,
     bounce:false,
     init:function(){
@@ -81,7 +79,7 @@ Crafty.c("Player",{
                 }
             } else if(e.keyCode === Crafty.keys.P){
                 if(this.paused) {
-                    Crafty.trigger("HideText");
+                    Crafty.trigger("HideText");//would hide any text... not great solution?
                 } else {
                     Crafty.trigger("ShowText","PAUSED!");
                 }
@@ -123,7 +121,8 @@ Crafty.c("Player",{
             if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
                 if(Crafty.lastEvent
                     && this.weapons[this.currentWeapon].canBeFired
-                    && mouseDown > 0){
+                    && mouseDown > 0
+                    && !$('#settingsButton').is(":hover")){
                     //fire if mouse is down and current weapon is auto fire
                     this.trigger("canvasMouseDown", Crafty.lastEvent);
                 } else {
@@ -198,7 +197,7 @@ Crafty.c("Player",{
                     this.shield.current = 0;
                 }
             }
-            if(this.hp.current <= this.hp.current * 0.3) Crafty.trigger("TempShowText","Hull Breach Imminent!");
+            if(this.hp.current <= this.hp.max * 0.3) Crafty.trigger("TempShowText","Hull Breach Imminent!");
             // Crafty.trigger("UpdateStats");
             if(this.hp.current <= 0) this.die();
         })
@@ -326,5 +325,17 @@ Crafty.c("Player",{
             weapon.canBeFired = false;
             Crafty.trigger("TempShowText","Weapon Overheated!");
         }
+    },
+    // for saving only the data we need to recreate the player obj
+    saveObj:function(){
+        state = {
+            hp: this.hp,
+            shield: this.shield,
+            weapons: this.weapons,
+            bigWeapon: this.bigWeapon,
+            ship: this.ship,
+
+
+        };
     }
 });

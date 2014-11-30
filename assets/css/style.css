@@ -19,7 +19,6 @@ a:hover {
 a:active {
     color: #3e3eff;
 }
-
 #cr-stage{
     position: absolute;
     left:50%;
@@ -41,7 +40,6 @@ a:active {
     cursor:pointer;
 }
 #interface,#loading{
-
     position: absolute;
     width: 100%;
     height: 100%;
@@ -119,11 +117,9 @@ div.text.center{
 .bottom{
     bottom:0px;
 }
-
 .bottom2{
     bottom:35px;
 }
-
 .bottom3{
     bottom:70px;
 }
@@ -152,7 +148,23 @@ div.text.center{
     border:2px ridge #AAAAAA;
     background: #333333;
 }
-
+#loading .bars{
+    width:100%;
+    padding:0px;
+    margin:0px;
+}
+#loading .text{
+    color:#ffffff;
+    line-height: 30px;
+}
+#loading .ui-progressbar-value{
+    -moz-border-radius: 5px; /* Firefox */
+    -webkit-border-radius: 5px; /* Safari, Chrome */
+    border-radius: 5px; /* CSS3 */
+    background: #990000;
+    height: 30px;
+    width:100%;
+}
 .button{
     cursor:pointer;
     display:none;
@@ -171,29 +183,37 @@ div.text.center{
     line-height: 30px;
     bottom:20px;
 }
-
-.pause.button{
+.settings.button{
     width: 40px;
-    height: 12px;
+    height: 10px;
     bottom: none;
+    display: block;
+    background: #9EAEB3;
+    z-index:3;
     top: 5px;
     line-height: 100%;
 }
-#loading .bars{
-    width:100%;
-    padding:0px;
-    margin:0px;
+#settingsDiv{
+    opacity:0.82;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    background: #000;
+    display: none;
+    z-index:5;
 }
-#loading .text{
-    color:#ffffff;
-    line-height: 30px;
+/*FIXME make this nicer after reskin things happen....*/
+#settings{
+    width:350px;
+    margin:100px 50px 0 190px;
+    background-color:white;
+    border: 5px solid rgb(90, 158, 181);
+    border-radius:2px;
+    padding:20px 30px;
+    box-shadow:0 0 15px;
 }
-#loading .ui-progressbar-value{
-    -moz-border-radius: 5px; /* Firefox */
-    -webkit-border-radius: 5px; /* Safari, Chrome */
-    border-radius: 5px; /* CSS3 */
-    background: #990000;
-    height: 30px;
-    width:100%;
-
+#settings h3{
+    text-align: center;
 }

@@ -16,7 +16,17 @@ Crafty.scene("Loading",function(){
     var button = $('#launchButton');
     var text = bar.find('.text');
 
+    //Fixme do all UI mods/binds/inits here or else where?
+    $('#closeSettings').click(function(){
+        Crafty.pause(false);
+        $('#settingsDiv').hide();
+    });
+    $('.settings.button').click(function(){
+        Crafty.pause(true);
+        $('#settingsDiv').show();
+    });
     $('#interface').hide();
+    $('#settingsDiv').hide();
     //Setup progressbar
     text.text("Loading ...");
 
@@ -73,7 +83,7 @@ function(){
 });
 function chargeOrReady(perc){
     if (perc == 100){ return 'Ready'}
-    return 'Charge';
+        return 'Charge';
 }
 //Level 1 Scene
 Crafty.scene("Level1",function(){
@@ -89,8 +99,8 @@ Crafty.scene("Level1",function(){
         hp:$('#hp'),
         bigWeapon:$('#bigWeapon'),
         weapon:[$('#weapon'),
-                $('#weapon2'),
-                $('#weapon3')],
+        $('#weapon2'),
+        $('#weapon3')],
         shield:$('#shield')
     };
     bars.hp.addClass('red');
@@ -106,8 +116,8 @@ Crafty.scene("Level1",function(){
         fps: $('.fps'),
         hp:bars.hp.find('.text'),
         weapon:[bars.weapon[0].find('.text'),
-                bars.weapon[1].find('.text'),
-                bars.weapon[2].find('.text')],
+        bars.weapon[1].find('.text'),
+        bars.weapon[2].find('.text')],
         bigWeapon:bars.bigWeapon.find('.text'),
         shield:bars.shield.find('.text'),
         alert:$('.alert')
@@ -135,7 +145,7 @@ Crafty.scene("Level1",function(){
     //Bind Gameloop to the Scene
     Crafty.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
-        spotEnemys(frame.frame);
+        if(!player.preparing) spotEnemys(frame.frame);
         //Setup Background position
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
 
@@ -154,8 +164,8 @@ Crafty.scene("Level1",function(){
                     (
                         player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
                         (player.weapons[i].percent >= 100 ? "Ready" : "Charge")
-                    )
-                );
+                        )
+                    );
             } else{
                 player.weapons[i].percent = Math.round(player.weapons[i].heat);
                 infos.weapon[i].text(
@@ -163,8 +173,8 @@ Crafty.scene("Level1",function(){
                     (
                         player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
                         (player.weapons[i].percent >= 100 ? "Cooling" : "Ready")
-                    )
-                );
+                        )
+                    );
                 // infos.weapon[i].text(
                 //         player.weapons[i].statBanner + " " +
                 //         (
@@ -174,7 +184,7 @@ Crafty.scene("Level1",function(){
                 //     );
                 // infos.weapon[i].text(player.weapons[i].has(("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "") +
                 //     player.weapons[i].statBanner + ' ' + player.weapons[i].percent + '%');
-            }
+}
             // update the progress fill in
             bars.weapon[i].progressbar({ value:player.weapons[i].percent });
             // update the select highlighter
@@ -190,8 +200,8 @@ Crafty.scene("Level1",function(){
             (
                 player.bigWeapon.has("BallisticWeapon")? "(" + player.bigWeapon.ammo + ") " :
                 (player.bigWeapon.percent >= 100 ? "Cooling" : "Ready")
-            )
-        );
+                )
+            );
 
         infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
@@ -212,7 +222,7 @@ Crafty.scene("Level1",function(){
     });
     // Tell player to shoot this direction
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
-            Crafty.trigger("canvasMouseDown", e);
+        Crafty.trigger("canvasMouseDown", e);
     });
 
     //Bind UpdateStats Event
