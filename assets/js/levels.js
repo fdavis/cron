@@ -10,16 +10,18 @@ Crafty.scene("Loading",function(){
     }
     //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
-    Crafty.settings.modify("autoPause", true);
-    Crafty.settings.modify("stageSelectable", false);
-    //I guess crafty.isPaused() returns undefined if not paused?
-    console.group("startup");
-    console.debug('pre pause does crafty return bool for crafty.ispaused()??' + Crafty.isPaused());
-    Crafty.pause();
-    Crafty.pause();
-    console.group("startup");
-    console.debug('post pause does crafty return bool for crafty.ispaused()??' + Crafty.isPaused());
-    console.groupEnd();
+
+    // ripped from crafty, need to modify so autopause happens but does not unpause if I paused...
+    // Crafty.addEvent(this, window, "blur", function () {
+    //     if (Crafty.settings.get("autoPause")) {
+    //         if (!Crafty._paused) Crafty.pause();
+    //     }
+    // });
+    // Crafty.addEvent(this, window, "focus", function () {
+    //     if (Crafty._paused && Crafty.settings.get("autoPause")) {
+    //         Crafty.pause();
+    //     }
+    // });
 
     //Select DOM elements
     var bar = $('#load');

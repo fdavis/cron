@@ -1,6 +1,7 @@
 //game state saver/loader/tracker/controller ?
 Crafty.c("Model",{
 	playerCanShoot:true,
+	_paused:false,
 	init:function(){
 		this.requires("Persist,Keyboard");
 		// from the crafty docs example name loader
@@ -19,7 +20,6 @@ Crafty.c("Model",{
 
 			};
 		}
-		// var settings = Crafty.storage('settings');//store user prefs/settings
 
 
 		// FIXME debug things should be removed later
@@ -45,6 +45,14 @@ Crafty.c("Model",{
 	},
 	save:function(){
 		Crafty.storage('game',game);
+	},
+	pause:function(){
+		Crafty.resetKeyDown();
+		Crafty.pause(true);
+		this._pause = true;
+	},
+	unPause:function(){
+		resetKeyDown
 	},
 	getScore:function(){
 		return game.score;
