@@ -14,7 +14,7 @@ Crafty.c("Player",{
         max:100,
         percent:0
     },
-    paused:false,
+    firing:false,
     lives:3,
     weapons:[],
     currentWeapon:0,
@@ -66,29 +66,27 @@ Crafty.c("Player",{
 
             // or use the space bomb
             } else if(e.keyCode === Crafty.keys.SPACE){
-                if(this.preparing) return;
+                if(!this.canFire()) return;
                 if(this.bigWeapon.canBeFired == true){
                     //if no ammo then quit now
                     if(this.bigWeapon.has("BallisticWeapon") && this.bigWeapon.ammo == 0) {
                         Crafty.trigger("TempShowText",this.bigWeapon.statBanner + " is out of ammo!");
                         return;
                     }
+                    // WARNING: this does not call canvasMouseDown event, will break auto fire if it does
+                    // if we need to refactor something make another abstraction so that logic can be left alone
                     this.bigWeapon.canBeFired = false;
                     this.bigWeapon.cooldownCounter = 0;
                     this.shoot({x:0,y:1},this.bigWeapon);
                 }
-            } else if(e.keyCode === Crafty.keys.P){
-                if(this.paused) {
-                    Crafty.trigger("HideText");//would hide any text... not great solution?
-                } else {
-                    Crafty.trigger("ShowText","PAUSED!");
-                }
-                this.paused = !this.paused;
-                Crafty.pause();
             }
         })
+        .bind("canvasMouseUp", function (e) {
+            this.firing = false;
+        })
         .bind("canvasMouseDown", function (e) {
-            if(this.preparing) return;
+            if(!this.canFire()) return;
+            this.firing = true;
             if(this.weapons[this.currentWeapon].canBeFired == true) {
                 //if no ammo then quit now
                 if(this.weapons[this.currentWeapon].has("BallisticWeapon") && this.weapons[this.currentWeapon].ammo == 0) {
@@ -119,10 +117,11 @@ Crafty.c("Player",{
         })
         .bind("EnterFrame",function(frame){
             if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
-                if(Crafty.lastEvent
+
+                if(this.firing
+                    && Crafty.lastEvent
                     && this.weapons[this.currentWeapon].canBeFired
-                    && mouseDown > 0
-                    && !$('#settingsButton').is(":hover")){
+                    && this.canFire()){
                     //fire if mouse is down and current weapon is auto fire
                     this.trigger("canvasMouseDown", Crafty.lastEvent);
                 } else {
@@ -219,7 +218,7 @@ Crafty.c("Player",{
                 // Crafty.trigger("UpdateStats");
             }
         })
-        .reset() /*Set initial points*/;
+        .reset();// init some stats with a reset
         return this;
     },
     reset:function(){
@@ -252,6 +251,7 @@ Crafty.c("Player",{
         this.x = Crafty.viewport.width/2-this.w/2;
         this.y = Crafty.viewport.height-this.h-36;
 
+        this.firing = false;
         this.flicker = true;
         this.preparing = true;
     },
@@ -337,5 +337,11 @@ Crafty.c("Player",{
 
 
         };
+    },
+    canFire:function(){
+        console.group('player');
+        console.debug('can fire is check' + !this.preparing && model.hasPlayerFocus());
+        console.groupEnd();
+        return !this.preparing && model.hasPlayerFocus();
     }
 });

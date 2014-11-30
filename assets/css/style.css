@@ -194,13 +194,16 @@ div.text.center{
     line-height: 100%;
 }
 #settingsDiv{
-    opacity:0.82;
+    /*opacity:0.82;
+    I guess not? ... http://stackoverflow.com/questions/2636871/is-opacity-is-inherited-in-a-div
+    can't keep the text and things opaque*/
     position: absolute;
     top: 0px;
     left: 0px;
     height: 100%;
     width: 100%;
-    background: #000;
+    /*background: #000;*/
+    background-color:rgba(0,0,0,0.8);
     display: none;
     z-index:5;
 }

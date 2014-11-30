@@ -12130,11 +12130,11 @@ Crafty.extend({
 
             Crafty.addEvent(this, window, "blur", function () {
                 if (Crafty.settings.get("autoPause")) {
-                    if (!Crafty._paused) Crafty.pause();
+                    if (!Crafty.isPaused()) Crafty.pause();
                 }
             });
             Crafty.addEvent(this, window, "focus", function () {
-                if (Crafty._paused && Crafty.settings.get("autoPause")) {
+                if (Crafty.isPaused() && Crafty.settings.get("autoPause")) {
                     Crafty.pause();
                 }
             });

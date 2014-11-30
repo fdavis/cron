@@ -10,6 +10,16 @@ Crafty.scene("Loading",function(){
     }
     //Setup background image
     Crafty.background("url("+game_path+"assets/img/loading.jpg) black");
+    Crafty.settings.modify("autoPause", true);
+    Crafty.settings.modify("stageSelectable", false);
+    //I guess crafty.isPaused() returns undefined if not paused?
+    console.group("startup");
+    console.debug('pre pause does crafty return bool for crafty.ispaused()??' + Crafty.isPaused());
+    Crafty.pause();
+    Crafty.pause();
+    console.group("startup");
+    console.debug('post pause does crafty return bool for crafty.ispaused()??' + Crafty.isPaused());
+    console.groupEnd();
 
     //Select DOM elements
     var bar = $('#load');
@@ -24,7 +34,19 @@ Crafty.scene("Loading",function(){
     $('.settings.button').click(function(){
         Crafty.pause(true);
         $('#settingsDiv').show();
+    })
+    .mouseover(function(){
+        model.playerMouseOver();
+    })
+    .mouseout(function(){
+        model.playerMouseOut();
     });
+    $('#restartSettings').click(function(){
+        Crafty.pause(false);
+        $('#settingsDiv').hide();
+        Crafty.scene("Level1");
+    });
+
     $('#interface').hide();
     $('#settingsDiv').hide();
     //Setup progressbar
@@ -175,16 +197,7 @@ Crafty.scene("Level1",function(){
                         (player.weapons[i].percent >= 100 ? "Cooling" : "Ready")
                         )
                     );
-                // infos.weapon[i].text(
-                //         player.weapons[i].statBanner + " " +
-                //         (
-                //             player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
-                //             chargeOrReady(player.weapons[i].percent) + ': '+ player.weapons[i].percent + '%'
-                //         )
-                //     );
-                // infos.weapon[i].text(player.weapons[i].has(("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " : "") +
-                //     player.weapons[i].statBanner + ' ' + player.weapons[i].percent + '%');
-}
+            }
             // update the progress fill in
             bars.weapon[i].progressbar({ value:player.weapons[i].percent });
             // update the select highlighter
@@ -220,18 +233,24 @@ Crafty.scene("Level1",function(){
         });
 
     });
+    //FIXME do these need to be cleaned up when the scene finishes?
     // Tell player to shoot this direction
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
-        Crafty.trigger("canvasMouseDown", e);
+        // not sure how to avoid crafty.stage.elem from receiving mousedown event when player clicks on settings button
+        // so when mouseover on settings (or another button in the game scene) we disable this input via the model
+        if(model.hasPlayerFocus()) player.trigger("canvasMouseDown", e);
+    });
+    // Also when we are not firing (auto fire weapons leave player 'firing' until this event)
+    Crafty.addEvent(this, Crafty.stage.elem, "mouseup", function(e) {
+        player.trigger("canvasMouseUp", e);
     });
 
     //Bind UpdateStats Event
     Crafty.bind("UpdateStats",function(){
 
-
     });
 
-    //Bind global Event Show Text
+    //Bind global Event Show Text easeInExpo chosen because I'm trying to get more time where the text is there so its more readable
     Crafty.bind("ShowText",function(text){
         infos.alert.text(text).show().effect('pulsate','easeInExpo',500)
     });
@@ -249,7 +268,6 @@ Crafty.scene("Level1",function(){
         Crafty.trigger("ShowText","Game Over!");
         Crafty.audio.stop();
         Crafty.audio.play("gameover",-1);
-
     });
     //Play background music and repeat
     // Crafty.audio.play("space",-1);
