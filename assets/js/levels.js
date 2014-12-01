@@ -48,10 +48,11 @@ Crafty.scene("Loading",function(){
         $('#settingsDiv').hide();
         Crafty.scene("Level1");
     });
-    console.log($('#levelMenuButton'));
     $('#levelMenuButton').click(function(){
-        console.log('in level menu button click func');
         Crafty.scene('LevelSelector');
+    });
+    $('#level1Button').click(function(){
+        Crafty.scene('Level1');
     });
 
     $('#interface').hide();

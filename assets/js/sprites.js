@@ -52,6 +52,11 @@ Crafty.sprite(128,game_path + "assets/img/explosion.png",{
     explosion2:[0,1],
     explosion3:[0,2]
 });
+Crafty.sprite(384,game_path + "assets/img/explosionLarge.png",{
+    explosionLarge1:[0,0],
+    explosionLarge2:[0,1],
+    explosionLarge3:[0,2]
+});
 
 Crafty.sprite(34,30,game_path + "assets/img/powerups.png",{
     heal:[0,0],

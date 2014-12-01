@@ -84,10 +84,13 @@ Crafty.c("Bomb",{
         .addComponent("Bullet","missile2")
         .bind("Remove",function(dmg){
             //Create a random explosion at it's position
-            Crafty.e("RandomExplosion,SplashDamage,Collision")
+            Crafty.e("RandomLargeExplosion,SplashDamage,Collision")
             .attr({
-                x:this.x-this.w*3,//FIXME why do these scalars work????
-                y:this.y-this.h*1.3,
+                //FIXME make this work nicer
+                // these "random" magic numbers (which are half height/half widths) make the explosion appear
+                // in about the location the tip of the bomb impacts
+                x:this.x-384/2,
+                y:this.y-384/2,
                 dmg:5
             });
         });

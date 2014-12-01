@@ -89,20 +89,7 @@
                 <div class="menu" id="levelSelection">
                     <h3>Select a Level</h3>
                     <p>
-                        <label>Difficulty: <span>*</span></label>
-                        <input type="text" id="name" placeholder="Name"/>
-                    </p>
-                    <p>
-                        <label>Load Game: <span>*</span></label>
-                        <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
-                    </p>
-                    <p>
-                        <label>Loadout:</label>
-                        <input type="button" id="loadoutButton" value="Loadout"/>
-                    </p>
-                    <p>
-                        <input type="button" id="startButton" value="Start"/>
-                        <input type="button" id="restartSettings" value="Restart"/>
+                        <input type="button" id="level1Button" value="Level1"/>
                     </p>
                     <div id="settingsButton" class="settings text button">Settings</div>
                 </div>
@@ -111,23 +98,27 @@
                 <div class="menu" id="mainMenu">
                     <h3>Main Menu</h3>
                     <p>
-                        <label>Difficulty: <span>*</span></label>
-                        <input type="text" id="name" placeholder="Name"/>
+                        <span>Difficulty</span>
+                        <select name="difficulty">
+                            <option value="easy">Easy</option>
+                            <option selected="selected" value="normal">Normal</option>
+                            <option value="hard">Hard</option>
+                        </select>
                     </p>
                     <p>
-                        <input type="button" id="levelMenuButton" value="Levels"/>
+                        <input type="button" id="levelMenuButton" value="Level Selector"/>
                     </p>
                     <p>
-                        <label>Load Game: <span>*</span></label>
-                        <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
+                        <input type="button" id="loadMenuButton" onclick='alert("this does not work yet");' value="Load Game"/>>
                     </p>
                     <p>
-                        <label>Loadout:</label>
-                        <input type="button" id="loadoutButton" value="Loadout"/>
+                        <input type="button" id="saveMenuButton" onclick='alert("this does not work yet");' value="Save Game"/>
+                    </p>
+                    <p>
+                        <input type="button" id="loadoutMenuButton" onclick='alert("this does not work yet");' value="Loadout"/>
                     </p>
                     <p>
                         <input type="button" id="startButton" value="Start"/>
-                        <input type="button" id="restartSettings" value="Restart"/>
                     </p>
                     <div id="settingsButton" class="settings text button">Settings</div>
                 </div>

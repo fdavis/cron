@@ -71,7 +71,7 @@ var allTheWeapons = {
         fireInterval:34,
         percent:100,
         hasAmmo:true,
-        ammo:1,
+        ammo:10,
         statBanner:"Missile Launcher"
     },
     Laser_Wave:{
@@ -113,7 +113,7 @@ var allTheWeapons = {
         cooldownCounter:120,
         fireInterval:120,
         hasAmmo:true,
-        ammo:5,
+        ammo:50,
         percent:100,
         statBanner:"Bomb"
    }
