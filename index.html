@@ -1,13 +1,19 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8" />
     <title>Cron</title>
     <!--  <script type="text/javascript" src="http://cdn.crafty-modules.com/crafty-DEBUG.js"></script> -->
-    <script type="text/javascript" src="assets/js/crafty.js"></script>
+    <!-- craftyjs 0.6.3 -->
+    <script type="text/javascript" src="assets/js/libs/crafty.js"></script>
     <script>var game_path = location.href.lastIndexOf("/") !== -1 ? location.href.substring(0, location.href.lastIndexOf("/") + 1) : location.href;</script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js"></script>
+
+    <!-- jquery 1.7.1 -->
+    <script type="text/javascript" src="assets/js/libs/jquery.min.js"></script>
+    <!-- jquery ui 1.8.16-->
+    <script type="text/javascript" src="assets/js/libs/jquery-ui.min.js"></script>
+
+    
     <script type="text/javascript" src="assets/js/globals.js"></script>
     <script type="text/javascript" src="assets/js/loader.js"></script>
     <script type="text/javascript" src="assets/js/audio.js"></script>
@@ -54,19 +60,76 @@
             <p>Developed on Chromium 38 on Arch Linux</p>
         </div>
         <div id="cr-stage" unselectable='on'>
-            <div id="settingsDiv">
-                <div id="settings">
-                    <h3>Contact Form</h3>
-                    <label>Name: <span>*</span></label>
-                    <input type="text" id="name" placeholder="Name"/>
-                    <label>Email: <span>*</span></label>
-                    <input type="text" id="email" placeholder="Email"/>
-                    <label>Contact No: <span>*</span></label>
-                    <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
-                    <label>Message:</label>
-                    <textarea id="message" placeholder="Message......."></textarea>
-                    <input type="button" id="closeSettings" value="Close"/>
-                    <input type="button" id="restartSettings" value="Restart"/>
+            <div class="menuDiv" id="settingsDiv">
+                <div class="menu" id="settings">
+                    <h3>Settings Menu</h3>
+                    <p>
+                        <label>Music: <span>*</span></label>
+                        <input type="text" id="name" placeholder="Name"/>
+                    </p>
+                    <p>
+                        <label>SFX: <span>*</span></label>
+                        <input type="text" id="email" placeholder="Email"/>
+                    </p>
+                    <p>
+                        <label>No Screen Flash: <span>*</span></label>
+                        <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
+                    </p>
+                    <p>
+                        <label>Difficulty:</label>
+                        <input type="text" id="keymapper" placeholder="difficulty"/>
+                    </p>
+                    <p>
+                        <input type="button" id="closeSettings" value="Close"/>
+                        <input type="button" id="restartSettings" value="Restart"/>
+                    </p>
+                </div>
+            </div>
+            <div class="menuDiv" id="levelSelectionDiv">
+                <div class="menu" id="levelSelection">
+                    <h3>Select a Level</h3>
+                    <p>
+                        <label>Difficulty: <span>*</span></label>
+                        <input type="text" id="name" placeholder="Name"/>
+                    </p>
+                    <p>
+                        <label>Load Game: <span>*</span></label>
+                        <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
+                    </p>
+                    <p>
+                        <label>Loadout:</label>
+                        <input type="button" id="loadoutButton" value="Loadout"/>
+                    </p>
+                    <p>
+                        <input type="button" id="startButton" value="Start"/>
+                        <input type="button" id="restartSettings" value="Restart"/>
+                    </p>
+                    <div id="settingsButton" class="settings text button">Settings</div>
+                </div>
+            </div>
+            <div class="menuDiv" id="mainMenuDiv">
+                <div class="menu" id="mainMenu">
+                    <h3>Main Menu</h3>
+                    <p>
+                        <label>Difficulty: <span>*</span></label>
+                        <input type="text" id="name" placeholder="Name"/>
+                    </p>
+                    <p>
+                        <input type="button" id="levelMenuButton" value="Levels"/>
+                    </p>
+                    <p>
+                        <label>Load Game: <span>*</span></label>
+                        <input type="text" id="contactno" placeholder="10 digit Mobile no."/>
+                    </p>
+                    <p>
+                        <label>Loadout:</label>
+                        <input type="button" id="loadoutButton" value="Loadout"/>
+                    </p>
+                    <p>
+                        <input type="button" id="startButton" value="Start"/>
+                        <input type="button" id="restartSettings" value="Restart"/>
+                    </p>
+                    <div id="settingsButton" class="settings text button">Settings</div>
                 </div>
             </div>
             <div id="interface">

@@ -48,9 +48,16 @@ Crafty.scene("Loading",function(){
         $('#settingsDiv').hide();
         Crafty.scene("Level1");
     });
+    console.log($('#levelMenuButton'));
+    $('#levelMenuButton').click(function(){
+        console.log('in level menu button click func');
+        Crafty.scene('LevelSelector');
+    });
 
     $('#interface').hide();
     $('#settingsDiv').hide();
+    $('#mainMenuDiv').hide();
+    $('#levelSelectionDiv').hide();
     //Setup progressbar
     text.text("Loading ...");
 
@@ -60,8 +67,8 @@ Crafty.scene("Loading",function(){
     });
     //Bind click event on button
     button.live('click',function(){
-        //Start scene level 1
-        Crafty.scene("Level1");
+        //goto main menu
+        Crafty.scene("MainMenu");
     });
 
     $('.skip').live('click',function(){
@@ -101,14 +108,48 @@ Crafty.scene("Loading",function(){
 },
 //Uninit Scene
 function(){
-    Crafty.audio.stop();
+    //should keep playing into MainMenu Crafty.audio.stop();
     //Display loading interface
     $('#loading').hide();
 });
-function chargeOrReady(perc){
-    if (perc == 100){ return 'Ready'}
-        return 'Charge';
-}
+
+Crafty.scene("MainMenu",
+    //setup main menu
+    function(){
+        $('#mainMenuDiv').show();
+        $('#startButton').click(function(){
+            Crafty.scene("Level1");
+        });
+        $('.settings.button').click(function(){
+            Crafty.pause(true);
+            $('#settingsDiv').show();
+        })
+        .mouseover(function(){
+            model.playerMouseOver();
+        })
+        .mouseout(function(){
+            model.playerMouseOut();
+        });
+    },
+
+    //deinit mainmenu
+    function(){
+        $('#mainMenuDiv').hide();
+    }
+);
+
+Crafty.scene("LevelSelector",
+    //setup main menu
+    function(){
+        $('#levelSelectionDiv').show();
+    },
+
+    //deinit mainmenu
+    function(){
+        $('#levelSelectionDiv').hide();
+    }
+    );
+
 //Level 1 Scene
 Crafty.scene("Level1",function(){
     //Display interface
@@ -149,7 +190,6 @@ Crafty.scene("Level1",function(){
     var myFPS = 0;
 
     var spotEnemys = function(frame){
-        //Spot each 50th Fram one Asteroid
 
         if(frame % 50 == 0 && Crafty("Asteroid").length < 4){
             Crafty.e("Asteroid");
@@ -167,7 +207,7 @@ Crafty.scene("Level1",function(){
     //Create the player
     var player = Crafty.e("Player");
     //Bind Gameloop to the Scene
-    Crafty.bind("EnterFrame",function(frame){
+    this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
         if(!player.preparing) spotEnemys(frame.frame);
         //Setup Background position
@@ -240,11 +280,19 @@ Crafty.scene("Level1",function(){
     Crafty.addEvent(this, Crafty.stage.elem, "mousedown", function(e) {
         // not sure how to avoid crafty.stage.elem from receiving mousedown event when player clicks on settings button
         // so when mouseover on settings (or another button in the game scene) we disable this input via the model
-        if(model.hasPlayerFocus()) player.trigger("canvasMouseDown", e);
+        if(model.hasPlayerFocus()) {
+            console.group('levels');
+            console.debug('my player handle:');
+            console.debug(player);
+            console.debug('the player by selector:');
+            console.debug(Crafty('Player'));
+            Crafty('Player').trigger("canvasMouseDown", e);
+            console.groupEnd();
+        }
     });
     // Also when we are not firing (auto fire weapons leave player 'firing' until this event)
     Crafty.addEvent(this, Crafty.stage.elem, "mouseup", function(e) {
-        player.trigger("canvasMouseUp", e);
+        Crafty('Player').trigger("canvasMouseUp", e);
     });
 
     //Bind UpdateStats Event

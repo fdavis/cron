@@ -193,7 +193,7 @@ div.text.center{
     top: 5px;
     line-height: 100%;
 }
-#settingsDiv{
+.menuDiv{
     /*opacity:0.82;
     I guess not? ... http://stackoverflow.com/questions/2636871/is-opacity-is-inherited-in-a-div
     can't keep the text and things opaque*/
@@ -205,18 +205,43 @@ div.text.center{
     /*background: #000;*/
     background-color:rgba(0,0,0,0.8);
     display: none;
-    z-index:5;
 }
-/*FIXME make this nicer after reskin things happen....*/
-#settings{
-    width:350px;
-    margin:100px 50px 0 190px;
+.menu{
     background-color:white;
     border: 5px solid rgb(90, 158, 181);
     border-radius:2px;
     padding:20px 30px;
     box-shadow:0 0 15px;
 }
-#settings h3{
+#settingsDiv{
+    z-index:7;
+}
+/*FIXME make this nicer after reskin things happen....*/
+#settings{
+    width:350px;
+    margin:100px 50px 0 190px;
+}
+#settings h3,#mainMenu h3{
     text-align: center;
+}
+.menu label {
+  display: inline-block;
+}
+#mainMenuDiv{
+    z-index:5;
+}
+#levelSelectionDiv{
+    z-index:6;
+}
+#mainMenu{
+    width:350px;
+    margin:300px 50px 0 190px;
+
+}
+#levelSelection{
+    width:500px;
+    margin:100px 50px 0 150px;
+}
+.menu p{
+    margin: 10px;
 }
