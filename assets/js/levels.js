@@ -1,6 +1,20 @@
 /**
  * This file describe different scenes
  */
+
+// object for all the levelData
+levelData = {
+    level1: {
+        name: "Level 1",
+        money: 50,
+    },
+    level2: {
+        name: "Level Two",
+        money: 75,
+    }
+};
+
+
 //Loading Scene
 Crafty.scene("Loading",function(){
     var toLoad = [];
@@ -50,9 +64,6 @@ Crafty.scene("Loading",function(){
     });
     $('#levelMenuButton').click(function(){
         Crafty.scene('LevelSelector');
-    });
-    $('#level1Button').click(function(){
-        Crafty.scene('Level1');
     });
 
     $('#interface').hide();
@@ -143,16 +154,35 @@ Crafty.scene("LevelSelector",
     //setup main menu
     function(){
         $('#levelSelectionDiv').show();
+        // going to fill it programatically
+        var myDiv = $('#levelButtonDiv').empty();
+        var myKeys = Object.keys(levelData);
+        // FIXME this will need to be available levels at some point, not all levels
+        for(var i = 0; i < myKeys.length; ++i){
+            myDiv.append('<p><input type="button" id="' + myKeys[i] + 'Button" value="' + levelData[myKeys[i]].name + '"/></p>');
+            // add closure around click function i so the click function gets the value from the current iteration of the loop every loop
+            (function(i){
+                $('#' + myKeys[i] + 'Button').click(function(){
+                    var myi = i + 0;
+                    console.log(i);
+                    console.log(myi);
+                    console.log(myKeys);
+                    console.log(levelData);
+                    Crafty.scene('Level', levelData[myKeys[myi]]);
+                }); 
+            })(i);
+        }
     },
 
     //deinit mainmenu
     function(){
         $('#levelSelectionDiv').hide();
     }
-    );
+);
 
 //Level 1 Scene
-Crafty.scene("Level1",function(){
+Crafty.scene("Level",function(myData){
+    console.log(myData);
     //Display interface
     $('#interface').show();
     //Setup background of level
