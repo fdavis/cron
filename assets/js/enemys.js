@@ -270,29 +270,11 @@ Crafty.c("Level1",{
             player = Crafty(player[0]);
             x = Math.abs((this.x+this._w/2)-player.x);
 
-            if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
+            if((x<70)&& this._y < player.y && frame.frame % 20 == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }
             this.y += 1.5;
         })
-        // .bind("Shoot",function(){
-        //     var dir = dir || {x: 0, y: 1};
-        //     var weapon = {
-        //             name:"Weapon1",
-        //             dmg:1,
-        //             speed:25,
-        //             speedMax:25,
-        //             accel:0
-        //     };
-        //     var bullet = Crafty.e("Weapon1","EnemyBullet");
-        //     bullet.attr({
-        //         x: this._x+this._w/2+bullet.w/2,
-        //         y: this._y+this._h-bullet.h/2,
-        //         rotation: this._rotation,
-        //         xspeed: 5 * Math.sin(this._rotation / (180 / Math.PI)),
-        //         yspeed: 5 * Math.cos(this._rotation / (180 / Math.PI))
-        //     });
-        // });
     }
 });
 Crafty.c("Level2",{
@@ -318,7 +300,7 @@ Crafty.c("Level2",{
                 this.x--;
 
 
-            if((x<40)&& this._y < player.y && frame.frame % 20 == 0){
+            if((x<70)&& this._y < player.y && frame.frame % 20 == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }
             this.y += 1.5;

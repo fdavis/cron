@@ -7,10 +7,46 @@ levelData = {
     level1: {
         name: "Level 1",
         money: 50,
+        enemies: {
+            Asteroid: {
+                max: 3,
+                freq: 90,
+            },
+            Kamikaze: {
+                max: 1,
+                freq: 120,
+            },
+            Level1: {
+                max: 1,
+                freq: 60,
+            },
+            Level2: {
+                max: 3,
+                freq: 180,
+            },
+        },
     },
     level2: {
         name: "Level Two",
         money: 75,
+        enemies: {
+            Asteroid: {
+                max: 6,
+                freq: 30,
+            },
+            Kamikaze: {
+                max: 4,
+                freq: 40,
+            },
+            Level1: {
+                max: 3,
+                freq: 50,
+            },
+            Level2: {
+                max: 7,
+                freq: 20,
+            },
+        },
     }
 };
 
@@ -60,10 +96,14 @@ Crafty.scene("Loading",function(){
     $('#restartSettings').click(function(){
         Crafty.pause(false);
         $('#settingsDiv').hide();
-        Crafty.scene("Level1");
+        Crafty.scene("Level");
     });
     $('#levelMenuButton').click(function(){
         Crafty.scene('LevelSelector');
+    });
+    $('#mainMenuSettings').click(function(){
+        $('#settingsDiv').hide();
+        Crafty.scene('MainMenu');
     });
 
     $('#interface').hide();
@@ -130,7 +170,7 @@ Crafty.scene("MainMenu",
     function(){
         $('#mainMenuDiv').show();
         $('#startButton').click(function(){
-            Crafty.scene("Level");
+            Crafty.scene('Level', levelData['level1']);
         });
         $('.settings.button').click(function(){
             Crafty.pause(true);
@@ -221,19 +261,12 @@ Crafty.scene("Level",function(myData){
     }
     var myFPS = 0;
 
-    var spotEnemys = function(frame){
-
-        if(frame % 50 == 0 && Crafty("Asteroid").length < 4){
-            Crafty.e("Asteroid");
-        }
-        if(frame % 70 == 0 && Crafty("Kamikaze").length < 2){
-            Crafty.e("Kamikaze");
-        }
-        if(frame % 80 == 0  && Crafty("Level1").length < 2){
-            Crafty.e("Level1");
-        }
-        if(frame % 90 == 0  && Crafty("Level2").length < 1){
-            Crafty.e("Level2");
+    var spotEnemys = function(frame, enemies){
+        keys = Object.keys(enemies);
+        for(var x = 0; x < keys.length; ++x){
+            if(frame % enemies[keys[x]].freq == 0 && Crafty(keys[x]).length < enemies[keys[x]].max){
+                Crafty.e(keys[x]);
+            }
         }
     };
     //Create the player
@@ -241,7 +274,7 @@ Crafty.scene("Level",function(myData){
     //Bind Gameloop to the Scene
     this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
-        if(!player.preparing) spotEnemys(frame.frame);
+        if(!player.preparing) spotEnemys(frame.frame, myData.enemies);
         //Setup Background position
         Crafty.stage.elem.style.backgroundPosition ="0px "+frame.frame+"px";
 
