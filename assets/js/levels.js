@@ -130,7 +130,7 @@ Crafty.scene("MainMenu",
     function(){
         $('#mainMenuDiv').show();
         $('#startButton').click(function(){
-            Crafty.scene("Level1");
+            Crafty.scene("Level");
         });
         $('.settings.button').click(function(){
             Crafty.pause(true);
@@ -209,6 +209,7 @@ Crafty.scene("Level",function(myData){
     var infos = {
         lives: $('.lives'),
         score: $('.score'),
+        money: $('.money'),
         fps: $('.fps'),
         hp:bars.hp.find('.text'),
         weapon:[bars.weapon[0].find('.text'),
@@ -292,6 +293,7 @@ Crafty.scene("Level",function(myData){
         infos.hp.text('Hull: ' + player.hp.current + '/' + player.hp.max);
         infos.shield.text('Shield: ' + player.shield.current + '/' + player.shield.max);
         infos.score.text("Score: " + model.getScore());
+        infos.money.text("Money: " + model.getMoney());
         infos.lives.text("Lives: " + player.lives);
         infos.fps.text("FPS: " + myFPS);
 

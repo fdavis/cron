@@ -14,18 +14,16 @@ Crafty.c("Model",{
 
 		game = Crafty.storage('game');//store game progress, unlocked things, etc...
 		if(game == null){
-			game = {
-				score: 0,
-				money: 0,
-
-			};
+			game = this.newGame();
 		}
-
 
 		// FIXME debug things should be removed later
 		this.bind("KeyDown", function(e) {
 			// save the state
 			if(e.keyCode === Crafty.keys.G){
+				this.save();
+			} else if(e.keyCode === Crafty.keys.H){
+				game = this.newGame();
 				this.save();
 			} else if(e.keyCode === Crafty.keys.P){
 				if(Crafty.isPaused()) {
@@ -37,8 +35,14 @@ Crafty.c("Model",{
 			}
 		})
 		.bind("Scored", function(points){
-			this.incrScore(points);
+			this.addScore(points);
 		});
+	},
+	newGame:function(){
+		return {
+				score: 0,
+				money: 0,
+			};
 	},
 	Model:function(){
 		var game = null;
@@ -57,8 +61,14 @@ Crafty.c("Model",{
 	getScore:function(){
 		return game.score;
 	},
-	incrScore:function(points){
+	addScore:function(points){
 		return game.score += points;
+	},
+	getMoney:function(){
+		return game.money;
+	},
+	addMoney:function(dollas){
+		return game.money += dollas;
 	},
 	hasPlayerFocus:function(){
 		console.group('model');

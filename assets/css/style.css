@@ -79,12 +79,14 @@ div.text.center{
 #interface .left{
     left:0px;
 }
-/*allow 4 bar stack on bottom*/
 #interface .midleft{
     left:188px;
 }
 #interface .midright{
     right:188px;
+}
+#interface .secondright{
+    right:94px;
 }
 #interface .right{
     right:0px;

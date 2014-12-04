@@ -46,6 +46,7 @@ Crafty.c("Enemy",{
         //Describe behavior on getting hit by SpaceJunk
         .onHit("SpaceJunk",function(ent){
             var junk = ent[0].obj;
+            if(this.has("EnemyPassableJunk") && junk.has("EnemyPassableJunk")) return;
             var dmg = 1;
             //decide the dmg done
             if(this.hp > junk.hp) dmg = junk.hp
@@ -190,7 +191,7 @@ Crafty.c("SmallAsteroid",{
     init:function(){
         var speed =  Crafty.math.randomInt(1,3);
         var direction = Crafty.math.randomInt(-speed,speed);
-        this.requires("Enemy,asteroid32,Tween,SpaceJunk")
+        this.requires("Enemy,asteroid32,Tween,SpaceJunk,EnemyPassableJunk")
         .origin("center")
         .tween({rotation:this.rotation + 180}, 2000)
         .bind("TweenEnd", function (){
