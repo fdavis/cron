@@ -189,8 +189,8 @@ Crafty.c("SmallAsteroid",{
     hp:1,
     points:10,
     init:function(){
-        var speed =  Crafty.math.randomInt(1,3);
-        var direction = Crafty.math.randomInt(-speed,speed);
+        speed = Crafty.math.randomInt(1,3);
+        this.direction = Crafty.math.randomInt(-speed,speed);
         this.requires("Enemy,asteroid32,Tween,SpaceJunk,EnemyPassableJunk")
         .origin("center")
         .tween({rotation:this.rotation + 180}, 2000)
@@ -199,7 +199,7 @@ Crafty.c("SmallAsteroid",{
         })
         .bind("EnterFrame",function(){
             this.y += speed;
-            this.x += direction;
+            this.x += this.direction;
         })
         .attr({
             rotation:Crafty.math.randomInt(0,360)
@@ -213,9 +213,14 @@ Crafty.c("Kamikaze",{
     hp:3,
     points:15,
     init:function(){
-        var player = Crafty("Player");
+        // only var that needs to be priv (others may be modified externally? really? we need a better solution)
         var attacking = false;
-        var xspeed = 6;
+
+        this.player = Crafty("Player");
+        this.xspeed = 6;
+        this.xattackingMultiplier = 0.5;
+        this.yspeed = 1.5;
+        this.yattackingMultiplier = 3;
         this.requires("Enemy,ship11")
         .origin("center")
         .attr({
@@ -224,29 +229,28 @@ Crafty.c("Kamikaze",{
             x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w)
         })
         .bind("EnterFrame",function(){
-            player = Crafty(player[0]);
             if(this.y < 0)
-                this.y +=2;
+                this.y += this.yspeed;
 
             // if close enough to match player.x then do it
-            var xDiff = player.x - this.x;
-            if (Math.abs(xDiff) < xspeed){
+            var xDiff = this.player.x - this.x;
+            if (Math.abs(xDiff) < this.xspeed){
                 this.x += xDiff;
             } else{
-                if(this.x < player.x)
-                    this.x += xspeed;
+                if(this.x < this.player.x)
+                    this.x += this.xspeed;
 
-                if(this.x > player.x)
-                    this.x -= xspeed;
+                if(this.x > this.player.x)
+                    this.x -= this.xspeed;
             }
 
-            if(this.x == player.x){
+            if(this.x == this.player.x){
                 attacking = true;
-                xspeed = Math.round(xspeed/2); //half x adjust on descent
+                this.xspeed = Math.round(this.xspeed * this.xattackingMultiplier); //half x adjust on descent
             }
 
             if(attacking)
-                this.y += 4;
+                this.y += this.yspeed * this.yattackingMultiplier ;
         });
 
     }
@@ -257,33 +261,43 @@ Crafty.c("Level1",{
     points:5,
     bulletSpeed:10,
     init:function(){
-        var player = Crafty("Player");
         var x = 0;
+
+        this.player = Crafty("Player");
+        this.yspeed = 1;
+        this.xDiff = 80;
+        this.shotFreq = 20;
         this.addComponent("Enemy","ship9","Shooter")
         .origin("center")
         .attr({
             rotation:180,
             y:-this.h,
-            x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w)
+            x:Crafty.math.randomInt(this.w, Crafty.viewport.width - this.w)
         })
         .bind("EnterFrame",function(frame){
-            player = Crafty(player[0]);
-            x = Math.abs((this.x+this._w/2)-player.x);
+            x = Math.abs((this.x + this._w / 2) - this.player.x);
 
-            if((x<70)&& this._y < player.y && frame.frame % 20 == 0){
+            if((x < this.xDiff) && this._y < this.player.y && frame.frame % this.shotFreq == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }
-            this.y += 1.5;
+            this.y += this.yspeed;
         })
     }
 });
+
 Crafty.c("Level2",{
     hp:2,
     points:10,
     bulletSpeed:15,
     init:function(){
-        var player = Crafty("Player");
         var x = 0;
+
+        this.player = Crafty("Player");
+        this.yspeed = 1;
+        this.xspeed = 2;
+        this.xDiff = 80;
+        this.shotFreq = 15;
+
         this.addComponent("Enemy","ship10","Shooter")
         .origin("center")
         .attr({
@@ -292,18 +306,16 @@ Crafty.c("Level2",{
             x:Crafty.math.randomInt(this.w,Crafty.viewport.width - this.w)
         })
         .bind("EnterFrame",function(frame){
-            player = Crafty(player[0]);
-            x = Math.abs((this.x+this._w/2)-player.x);
-            if(this.x < player.x)
-                this.x++;
-            if(this.x > player.x)
-                this.x--;
+            x = Math.abs((this.x + this._w / 2) - this.player.x);
+            if(this.x < this.player.x)
+                this.x += this.xspeed;
+            if(this.x > this.player.x)
+                this.x -= this.xspeed;
 
-
-            if((x<70)&& this._y < player.y && frame.frame % 20 == 0){
+            if((x < this.xDiff) && this._y < this.player.y && frame.frame % this.shotFreq == 0){
                 this.trigger("Shoot", this.bulletSpeed);
             }
-            this.y += 1.5;
+            this.y += this.yspeed;
         });
     }
 });

@@ -37,14 +37,23 @@ levelData = {
             Kamikaze: {
                 max: 4,
                 freq: 40,
+                attrs: {
+                    yspeed: 10,
+                },
             },
             Level1: {
                 max: 3,
                 freq: 50,
+                attrs: {
+                    shotFreq: 10,
+                },
             },
             Level2: {
                 max: 7,
                 freq: 20,
+                attrs: {
+                    shotFreq: 5,
+                },
             },
         },
     }
@@ -265,7 +274,8 @@ Crafty.scene("Level",function(myData){
         keys = Object.keys(enemies);
         for(var x = 0; x < keys.length; ++x){
             if(frame % enemies[keys[x]].freq == 0 && Crafty(keys[x]).length < enemies[keys[x]].max){
-                Crafty.e(keys[x]);
+                var tmp = Crafty.e(keys[x]);
+                tmp.attr(enemies[keys[x]].attrs);
             }
         }
     };
