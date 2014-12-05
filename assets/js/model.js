@@ -85,5 +85,8 @@ Crafty.c("Model",{
 	},
 	playerMouseOut:function(){
 		this.playerCanShoot = true;
+	},
+	stub:function(){
+		console.log('model stub function placeholder');
 	}
 });

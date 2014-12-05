@@ -207,6 +207,7 @@ div.text.center{
     /*background: #000;*/
     background-color:rgba(0,0,0,0.8);
     display: none;
+    z-index:2;
 }
 .menu{
     background-color:white;

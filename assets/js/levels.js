@@ -110,6 +110,9 @@ Crafty.scene("Loading",function(){
     $('#levelMenuButton').click(function(){
         Crafty.scene('LevelSelector');
     });
+    $('#loadoutMenuButton').click(function(){
+        Crafty.scene('LoadoutSelector');
+    });
     $('#mainMenuSettings').click(function(){
         $('#settingsDiv').hide();
         Crafty.scene('MainMenu');
@@ -226,6 +229,25 @@ Crafty.scene("LevelSelector",
     //deinit mainmenu
     function(){
         $('#levelSelectionDiv').hide();
+    }
+);
+
+Crafty.scene("LoadoutSelector",
+    //setup main menu
+    function(){
+        $('#loadoutSelectionDiv').show();
+
+        // FIXME this will need to do a lot more ...
+        var myDiv = $('#loadoutButtonDiv').empty();
+        myDiv.append('<p><input type="button" id="loadoutTestButton" value="Loadout Test"/></p>');
+        $('#loadoutTestButton').click(function(){
+            model.stub();
+        });
+    },
+
+    //deinit mainmenu
+    function(){
+        $('#loadoutSelectionDiv').hide();
     }
 );
 
