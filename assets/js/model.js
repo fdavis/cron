@@ -42,6 +42,8 @@ Crafty.c("Model",{
 		return {
 				score: 0,
 				money: 0,
+				player: null,
+				levels: null,
 			};
 	},
 	Model:function(){
@@ -71,11 +73,6 @@ Crafty.c("Model",{
 		return game.money += dollas;
 	},
 	hasPlayerFocus:function(){
-		console.group('model');
-		console.debug(this.playerCanShoot && !Crafty.isPaused());
-		console.groupEnd();
-		// console.log('Crafty paused var?:' + Crafty.isPaused());
-		// if(Crafty.isPaused()) console.log('the durn thang is PAUSEESSDDDDD');
 		return this.playerCanShoot && !Crafty.isPaused();
 	},
 	// when there is a clicky thing in the level we want the player to click (like menus)
@@ -86,7 +83,7 @@ Crafty.c("Model",{
 	playerMouseOut:function(){
 		this.playerCanShoot = true;
 	},
-	stub:function(){
-		console.log('model stub function placeholder');
-	}
+	playerLoad:function(){
+		return this.game.player;
+	},
 });

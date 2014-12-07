@@ -218,7 +218,7 @@ Crafty.c("Player",{
                 // Crafty.trigger("UpdateStats");
             }
         })
-        .reset();// init some stats with a reset
+        .reset();// init some stats with reset
         return this;
     },
     reset:function(){
@@ -326,7 +326,7 @@ Crafty.c("Player",{
             Crafty.trigger("TempShowText","Weapon Overheated!");
         }
     },
-    // for saving only the data we need to recreate the player obj
+    // saving only the data we need to recreate the player obj
     saveObj:function(){
         state = {
             hp: this.hp,
@@ -334,14 +334,18 @@ Crafty.c("Player",{
             weapons: this.weapons,
             bigWeapon: this.bigWeapon,
             ship: this.ship,
-
-
         };
     },
+    Player:function(data){
+        if(data == null) return;
+        keys = Object.keys(data);
+        for(var x = 0; x < keys.length; ++x){
+            this[keys[x]] = data[keys[x]];
+        }
+        this.reset();
+        return this;
+    },
     canFire:function(){
-        console.group('player');
-        console.debug('can fire is check' + !this.preparing && model.hasPlayerFocus());
-        console.groupEnd();
         return !this.preparing && model.hasPlayerFocus();
     }
 });

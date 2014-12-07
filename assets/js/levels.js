@@ -216,10 +216,6 @@ Crafty.scene("LevelSelector",
             (function(i){
                 $('#' + myKeys[i] + 'Button').click(function(){
                     var myi = i + 0;
-                    console.log(i);
-                    console.log(myi);
-                    console.log(myKeys);
-                    console.log(levelData);
                     Crafty.scene('Level', levelData[myKeys[myi]]);
                 }); 
             })(i);
@@ -302,7 +298,7 @@ Crafty.scene("Level",function(myData){
         }
     };
     //Create the player
-    var player = Crafty.e("Player");
+    var player = Crafty.e("Player").Player({hp:{max:20}});
     //Bind Gameloop to the Scene
     this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
@@ -379,13 +375,7 @@ Crafty.scene("Level",function(myData){
         // not sure how to avoid crafty.stage.elem from receiving mousedown event when player clicks on settings button
         // so when mouseover on settings (or another button in the game scene) we disable this input via the model
         if(model.hasPlayerFocus()) {
-            console.group('levels');
-            console.debug('my player handle:');
-            console.debug(player);
-            console.debug('the player by selector:');
-            console.debug(Crafty('Player'));
             Crafty('Player').trigger("canvasMouseDown", e);
-            console.groupEnd();
         }
     });
     // Also when we are not firing (auto fire weapons leave player 'firing' until this event)
