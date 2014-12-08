@@ -57,6 +57,7 @@ var allTheWeapons = {
         accel:0,
         fireRate:5,
         percent:0,
+        cost:80,
         statBanner:"AutoLaser"
     },
     MissileLauncher1:{
@@ -72,6 +73,7 @@ var allTheWeapons = {
         percent:100,
         hasAmmo:true,
         ammo:10,
+        cost:75,
         statBanner:"Missile Launcher"
     },
     Laser_Wave:{
@@ -86,6 +88,7 @@ var allTheWeapons = {
         cooldownCounter:22,
         fireInterval:22,
         percent:100,
+        cost:105,
         statBanner:"Laser Wave"
     },
     Laser1:{
@@ -100,6 +103,7 @@ var allTheWeapons = {
         cooldownCounter:7,
         fireInterval:7,
         percent:100,
+        cost:30,
         statBanner:"Laser"
    },
    Bomb:{
@@ -115,6 +119,7 @@ var allTheWeapons = {
         hasAmmo:true,
         ammo:50,
         percent:100,
+        cost:500,
         statBanner:"Bomb"
    }
 }

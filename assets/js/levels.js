@@ -102,11 +102,11 @@ Crafty.scene("Loading",function(){
     .mouseout(function(){
         model.playerMouseOut();
     });
-    $('#restartSettings').click(function(){
-        Crafty.pause(false);
-        $('#settingsDiv').hide();
-        Crafty.scene("Level");
-    });
+    // $('#restartSettings').click(function(){
+    //     Crafty.pause(false);
+    //     $('#settingsDiv').hide();
+    //     Crafty.scene("Level");
+    // });
     $('#levelMenuButton').click(function(){
         Crafty.scene('LevelSelector');
     });
@@ -229,19 +229,32 @@ Crafty.scene("LevelSelector",
 );
 
 Crafty.scene("LoadoutSelector",
-    //setup main menu
+    //setup loadout menu
     function(){
+        // get the backend obj
+        var loadout = Crafty.e('Loadout');
+
         $('#loadoutSelectionDiv').show();
 
         // FIXME this will need to do a lot more ...
-        var myDiv = $('#loadoutButtonDiv').empty();
-        myDiv.append('<p><input type="button" id="loadoutTestButton" value="Loadout Test"/></p>');
-        $('#loadoutTestButton').click(function(){
-            model.stub();
+        // like sorts, select the type, and a all the loadout UI things and such
+        var myStoreDiv = $('#loadoutStoreButtonDiv').empty();
+
+        // setup store purchase buttons
+        myStoreDiv.append('<p><input type="button" id="loadoutStoreButton1" value="Purchase AutoLaser"/></p>');
+        $('#loadoutStoreButton1').click(function(){
+            loadout.purchase('AutoLaser');
+        });
+
+        // setup inventory equip buttons
+        var invDiv = $('#loadoutInvButtonDiv').empty();
+        invDiv.append('<p><input type="button" id="loadoutInvButton1" value="Equip AutoLaser"/></p>');
+        $('#loadoutInvButton1').click(function(){
+            loadout.equip(1,'weapon');
         });
     },
 
-    //deinit mainmenu
+    //deinit loadout menu
     function(){
         $('#loadoutSelectionDiv').hide();
     }
@@ -298,7 +311,8 @@ Crafty.scene("Level",function(myData){
         }
     };
     //Create the player
-    var player = Crafty.e("Player").Player({hp:{max:20}});
+    var player = Crafty.e("Player").Player(model.getPlayer());
+    console.log(player);
     //Bind Gameloop to the Scene
     this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
@@ -409,5 +423,15 @@ Crafty.scene("Level",function(myData){
     });
     //Play background music and repeat
     // Crafty.audio.play("space",-1);
-    Crafty.trigger("UpdateStats");
+    // Crafty.trigger("UpdateStats");
+
+    // deinit Level scene
+}, function(){
+    Crafty.unbind('ShowText');
+    Crafty.unbind('TempShowText');
+    Crafty.unbind('HideText');
+    Crafty.unbind('GameOver');
+    Crafty.unbind('mousedown');
+    Crafty.unbind('mouseup');
+    Crafty.unbind('EnterFrame');
 });

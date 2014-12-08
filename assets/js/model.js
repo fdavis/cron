@@ -1,4 +1,25 @@
 //game state saver/loader/tracker/controller ?
+
+var playerInit = function () {
+	return {
+		hp:{
+			current:10,
+			max:10,
+			percent:100
+		},
+		shield:{
+			current:10,
+			max:10,
+			percent:100
+		},
+		weapons: [
+		    Crafty.e("Weapon").Weapon(allTheWeapons.AutoLaser),
+		    Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
+		    Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
+		],
+	};
+};
+
 Crafty.c("Model",{
 	playerCanShoot:true,
 	_paused:false,
@@ -12,9 +33,9 @@ Crafty.c("Model",{
 		// }
 		// var player = Crafty.storage('player');//load player object  ?
 
-		game = Crafty.storage('game');//store game progress, unlocked things, etc...
-		if(game == null){
-			game = this.newGame();
+		this.game = Crafty.storage('game');//store game progress, unlocked things, etc...
+		if(this.game == null){
+			this.game = this.newGame();
 		}
 
 		// FIXME debug things should be removed later
@@ -22,9 +43,11 @@ Crafty.c("Model",{
 			// save the state
 			if(e.keyCode === Crafty.keys.G){
 				this.save();
+				console.log('game saved');
 			} else if(e.keyCode === Crafty.keys.H){
-				game = this.newGame();
+				this.game = this.newGame();
 				this.save();
+				console.log('new game started');
 			} else if(e.keyCode === Crafty.keys.P){
 				if(Crafty.isPaused()) {
 					Crafty.trigger("HideText");//FIXME would hide any text... not great solution?
@@ -42,15 +65,15 @@ Crafty.c("Model",{
 		return {
 				score: 0,
 				money: 0,
-				player: null,
+				player: playerInit(),
 				levels: null,
 			};
 	},
-	Model:function(){
-		var game = null;
-	},
+	// Model:function(){
+	// 	var this.game = null;
+	// },
 	save:function(){
-		Crafty.storage('game',game);
+		Crafty.storage('game',this.game);
 	},
 	pause:function(){
 		Crafty.resetKeyDown();
@@ -61,16 +84,19 @@ Crafty.c("Model",{
 		resetKeyDown
 	},
 	getScore:function(){
-		return game.score;
+		return this.game.score;
 	},
 	addScore:function(points){
-		return game.score += points;
+		return this.game.score += points;
 	},
 	getMoney:function(){
-		return game.money;
+		return this.game.money;
 	},
 	addMoney:function(dollas){
-		return game.money += dollas;
+		return this.game.money += dollas;
+	},
+	subMoney:function(dollas){
+		return this.game.money -= dollas;
 	},
 	hasPlayerFocus:function(){
 		return this.playerCanShoot && !Crafty.isPaused();
@@ -83,7 +109,12 @@ Crafty.c("Model",{
 	playerMouseOut:function(){
 		this.playerCanShoot = true;
 	},
-	playerLoad:function(){
+	getPlayer:function(){
 		return this.game.player;
+	},
+	swapWeapon:function(newWeapon, index){
+		var oldWeapon = this.game.player.weapons[index];
+		this.game.player.weapons[index] = newWeapon;
+		return oldWeapon;
 	},
 });

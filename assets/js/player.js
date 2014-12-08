@@ -336,11 +336,24 @@ Crafty.c("Player",{
             ship: this.ship,
         };
     },
+    //AKA player load - dumb/trusting for now... do we need protection here? maybe?
     Player:function(data){
         if(data == null) return;
         keys = Object.keys(data);
         for(var x = 0; x < keys.length; ++x){
-            this[keys[x]] = data[keys[x]];
+            // need entity clone of weapons, deep copy, must have crafty funcs
+            if(keys[x] == 'weapons') {
+                this[keys[x]] = []; //clear the array
+                for(var i = 0; i < data[keys[x]].length; ++i){
+                    this[keys[x]].push(Crafty.e("Weapon").Weapon(data[keys[x]][i]));
+                    console.log(keys[x]);
+                    console.log(data[keys[x]][i]);
+                }
+                console.log(this[keys[x]]);
+
+            } else {
+                this[keys[x]] = data[keys[x]];
+            }
         }
         this.reset();
         return this;
