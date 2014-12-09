@@ -28,9 +28,9 @@ Crafty.c("Player",{
     init:function(){
         var stage = $('#cr-stage');
         this.weapons = [
-                Crafty.e("Weapon").Weapon(allTheWeapons.AutoLaser),
-                Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
-                Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
+                Crafty.e("Weapon").Weapon(allTheWeapons.Laser1),
+                Crafty.e("Weapon").Weapon(allTheWeapons.Laser1),
+                Crafty.e("Weapon").Weapon(allTheWeapons.Laser1)
             ];
         this.bigWeapon = Crafty.e("Weapon").Weapon(allTheWeapons.Bomb);
         this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
@@ -116,7 +116,15 @@ Crafty.c("Player",{
             }
         })
         .bind("EnterFrame",function(frame){
-            if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
+            if(this.preparing){
+                this.y--;
+                if(this.y < Crafty.viewport.height - this.h - Crafty.viewport.height / 4){
+                    this.preparing = false;
+                    this.flicker=false;
+
+                }
+                // FIXME clean this up for post init empty array nonsense on this.weapons
+            } else if(this.weapons[this.currentWeapon].isAuto && frame.frame % this.weapons[this.currentWeapon].fireRate == 0){
 
                 if(this.firing
                     && Crafty.lastEvent
@@ -130,13 +138,13 @@ Crafty.c("Player",{
                 }
             }
             // handle cooling other auto weapons (if any)
-            for(var i = 0; i < this.maxWeapon; ++i) {
+            for(var i = 0; i < this.maxWeapon && this.maxWeapon > this.weapons.length; ++i) {
                 if(i == this.currentWeapon) continue;
                 if(true == this.weapons[i].isAuto && frame.frame % this.weapons[i].fireRate == 0){
                     this.coolWeapon(this.weapons[i]);
                 }
             }
-
+            // FIXME this should be done with data binding >.<
             if(this.shield.current > 0){
                 this.shieldHandle.visible = true;
                 this.shieldHandle.alpha = this.shield.current / this.shield.max;
@@ -146,14 +154,6 @@ Crafty.c("Player",{
                 this.shieldHandle.visible = false;
             }
 
-            if(this.preparing){
-                this.y--;
-                if(this.y < Crafty.viewport.height-this.h-Crafty.viewport.height/4){
-                    this.preparing = false;
-                    this.flicker=false;
-
-                }
-            }
             for(var i = 0; i < this.weapons.length; i++){
                 if(false == this.weapons[i].isAuto && false == this.weapons[i].canBeFired){
                     ++this.weapons[i].cooldownCounter;
@@ -341,15 +341,12 @@ Crafty.c("Player",{
         if(data == null) return;
         keys = Object.keys(data);
         for(var x = 0; x < keys.length; ++x){
-            // need entity clone of weapons, deep copy, must have crafty funcs
+            // need crafty entity clone of weapons
             if(keys[x] == 'weapons') {
                 this[keys[x]] = []; //clear the array
                 for(var i = 0; i < data[keys[x]].length; ++i){
                     this[keys[x]].push(Crafty.e("Weapon").Weapon(data[keys[x]][i]));
-                    console.log(keys[x]);
-                    console.log(data[keys[x]][i]);
                 }
-                console.log(this[keys[x]]);
 
             } else {
                 this[keys[x]] = data[keys[x]];

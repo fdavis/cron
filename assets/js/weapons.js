@@ -21,15 +21,19 @@ Crafty.c("Weapon",{
     statBanner:"Laser",
     Weapon:function(args){
         for (var k in args){
-            if (args.hasOwnProperty(k)) {
+            if (args.hasOwnProperty(k) && k != '__c') {
                 this[k] = args[k];
             }
         }
         if(this.hasAmmo) this.requires("BallisticWeapon");
+        console.log('in weapon, hasAmmo:' + this.hasAmmo);
+        console.log(this.load);
         return this;
     }
 });
 
+//FIXME this should be AmmoWeapon or something
+//ballistic vs energy should be a separate topic/distinction
 Crafty.c("BallisticWeapon",{
     init:function(){
         this.requires("Weapon");

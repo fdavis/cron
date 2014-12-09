@@ -114,6 +114,7 @@ Crafty.scene("Loading",function(){
         Crafty.scene('LoadoutSelector');
     });
     $('#mainMenuSettings').click(function(){
+        Crafty.pause(false);
         $('#settingsDiv').hide();
         Crafty.scene('MainMenu');
     });
