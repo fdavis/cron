@@ -17,9 +17,9 @@ var playerInit = function () {
 		    Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
 		    Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
 		],
-		ship:'ship1',
+		ship:allTheShips.ship1,
 		bigWeapon:Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb),
-		pilot:'pilot1',
+		pilot:allThePilots.pilot1,
 	};
 };
 
@@ -76,12 +76,10 @@ Crafty.c("Model",{
 						Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb2),
 					],
 					ships:[
-						'ship1',
-						'ship2',
+						allTheShips.ship2,
 					],
 					pilots:[
-						'pilot1',
-						'pilot2',
+						allThePilots.pilot2,
 					],
 				},
 			};
@@ -164,9 +162,6 @@ Crafty.c("Model",{
 				return false;
 		}
 
-		// var oldItem = currentItem;
-		// this.game.player.weapons[index] = newWeapon;
-
 		return true;
 	},
 	acquireItem:function(type, item){
@@ -178,6 +173,7 @@ Crafty.c("Model",{
 		//FIXME if too many items make player sell/drop
 	},
 	getInventory:function(type){
+		console.log(this.game.inventory[type]);
 		return (type == null)? this.game.inventory : this.game.inventory[type];
 	},
 });

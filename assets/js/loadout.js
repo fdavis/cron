@@ -25,8 +25,8 @@ Crafty.c("Loadout",{
 		return {
 			weapons: allTheWeapons,
 			bigWeapons: allTheBigWeapons,
-			pilots: 'pilot1',
-			ships: 'ship1',
+			pilots: allThePilots,
+			ships: allTheShips,
 		};
 	},
 	getStoreInventory:function(type){

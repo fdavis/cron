@@ -34,7 +34,7 @@ Crafty.c("Player",{
             ];
         this.bigWeapon = Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb);
         this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
-        this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
+        this.requires("2D,Canvas,Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
         .bind('Moved', function(from) {
             // Don't allow to move the player out of Screen
@@ -329,8 +329,8 @@ Crafty.c("Player",{
     // saving only the data we need to recreate the player obj
     saveObj:function(){
         state = {
-            hp: this.hp,
-            shield: this.shield,
+            // hp: this.hp,
+            // shield: this.shield,
             weapons: this.weapons,
             bigWeapon: this.bigWeapon,
             ship: this.ship,
@@ -353,6 +353,15 @@ Crafty.c("Player",{
                 this[keys[keyIndex]] = data[keys[keyIndex]];
             }
         }
+        // FIXME require ship in data
+        if(data.ship == null) this.ship = allTheShips.ship1;
+
+        //FIXME should just get these values in reset
+        this.hp.max = this.ship.hp;
+        this.shield.max = this.ship.shield;
+        // get the ship's sprite on the player
+        this.addComponent(this.ship.spriteName);
+
         this.reset();
         return this;
     },

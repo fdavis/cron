@@ -244,28 +244,38 @@ Crafty.scene("LoadoutSelector",
         $('#loadoutSelectionDiv').show();
 
         // should only be populated after player ship changes, ie on load, or equip ship
-        var myStoreDiv = $('#loadoutTypeSelectButtonDiv').empty();
+        var loadoutTypeSelectionDiv = $('#loadoutTypeSelectButtonDiv').empty();
 
         // setup store purchase buttons
-        myStoreDiv.append('<p><input type="button" id="typeSelectButton1" value="Select Weapon Slot 1"/></p>');
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton1" value="Select Weapon Slot 1"/></p>');
         $('#typeSelectButton1').click(function(){
             console.log('select weapon slot 1');
             Crafty.trigger("ItemUpdate",{type:'weapons',position:0});
         });
-        myStoreDiv.append('<p><input type="button" id="typeSelectButton2" value="Select Weapon Slot 2"/></p>');
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton2" value="Select Weapon Slot 2"/></p>');
         $('#typeSelectButton2').click(function(){
             console.log('select weapon slot 2');
             Crafty.trigger("ItemUpdate",{type:'weapons',position:1});
         });
-        myStoreDiv.append('<p><input type="button" id="typeSelectButton3" value="Select Weapon Slot 3"/></p>');
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton3" value="Select Weapon Slot 3"/></p>');
         $('#typeSelectButton3').click(function(){
             console.log('select weapon slot 3');
             Crafty.trigger("ItemUpdate",{type:'weapons',position:2});
         });
-        myStoreDiv.append('<p><input type="button" id="typeSelectButton4" value="Select Big Weapon"/></p>');
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton4" value="Select Big Weapon"/></p>');
         $('#typeSelectButton4').click(function(){
             console.log('select bigweaopn');
             Crafty.trigger("ItemUpdate",{type:'bigWeapons'});
+        });
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton5" value="Select Ship"/></p>');
+        $('#typeSelectButton5').click(function(){
+            console.log('select ship');
+            Crafty.trigger("ItemUpdate",{type:'ships'});
+        });
+        loadoutTypeSelectionDiv.append('<p><input type="button" id="typeSelectButton6" value="Select Pilot"/></p>');
+        $('#typeSelectButton6').click(function(){
+            console.log('select pilot');
+            Crafty.trigger("ItemUpdate",{type:'pilots'});
         });
 
         // should be used to display info and things... probably doesn't need auto gen html
@@ -319,6 +329,7 @@ Crafty.scene("LoadoutSelector",
     //deinit loadout menu
     function(){
         $('#loadoutSelectionDiv').hide();
+        Crafty.unbind("ItemUpdate");
     }
 );
 
@@ -373,6 +384,8 @@ Crafty.scene("Level",function(myData){
     };
     //Create the player
     var player = Crafty.e("Player").Player(model.getPlayer());
+    $('.pilot').css('background-image', 'url(' + player.pilot.thumbLocation + ')');
+    // $('.pilot')
     //Bind Gameloop to the Scene
     this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies

@@ -22,6 +22,12 @@ Crafty.sprite(game_path + "assets/img/ships.png",{
 Crafty.sprite(60,60,game_path + "assets/img/player_shield.png",{
     player_shield:[0,0]
 });
+// Crafty.sprite(60,60,game_path + "assets/img/Animeheads/thumb.Anime_Girl.png",{
+//     anime_girl:[0,0]
+// });
+// Crafty.sprite(60,60,game_path + "assets/img/Animeheads/thumb.fuwafuwa.png",{
+//     fuwafuwa:[0,0]
+// });
 
 Crafty.sprite(5,13,game_path + "assets/img/weapon1_small.png",{
     laser1:[0,0]

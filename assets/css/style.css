@@ -79,6 +79,11 @@ div.text.center{
 #interface .left{
     left:0px;
 }
+#interface .pilot{
+    height:60px;
+    width:60px;
+    float:left;
+}
 #interface .midleft{
     left:188px;
 }
