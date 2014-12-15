@@ -236,6 +236,12 @@ div.text.center{
 #levelSelectionDiv{
     z-index:6;
 }
+#loadoutSelectionDiv{
+    z-index:6;
+    height: 500px;
+    top: 50px;
+    /*display: inline;*/
+}
 #mainMenu{
     width:350px;
     margin:300px 50px 0 190px;
@@ -247,4 +253,35 @@ div.text.center{
 }
 .menu p{
     margin: 10px;
+}
+
+/* want a layout like
+Type Select    | store stuff 
+Roll over data | inv stuff
+but this is what I get...
+*/
+#loadoutTypeSelectButtonDiv {
+    width: 350px;
+    height: 250px;
+    float: left;
+}
+#loadoutDisplayDiv {
+    width: 350px;
+    height: 250px;
+    top: 300px;
+    float: left;
+}
+#loadoutStoreButtonDiv {
+    width: 350px;
+    height: 250px;
+    right: 20px;
+    top: 30px;
+    float: right;
+}
+#loadoutInvButtonDiv {
+    width: 350px;
+    height: 250px;
+    top: 300px;
+    right: 20px;
+    float: right;
 }

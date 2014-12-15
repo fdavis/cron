@@ -12,11 +12,14 @@ var playerInit = function () {
 			max:10,
 			percent:100
 		},
-		weapons: [
+		weapons:[
 		    Crafty.e("Weapon").Weapon(allTheWeapons.AutoLaser),
 		    Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
 		    Crafty.e("Weapon").Weapon(allTheWeapons.MissileLauncher1)
 		],
+		ship:'ship1',
+		bigWeapon:Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb),
+		pilot:'pilot1',
 	};
 };
 
@@ -25,15 +28,9 @@ Crafty.c("Model",{
 	_paused:false,
 	init:function(){
 		this.requires("Persist,Keyboard");
-		// from the crafty docs example name loader
-		// var heroname = Crafty.storage('name');
-		// if(!heroname){
-		//   // Maybe ask the player what their name is here
-		//   heroname = 'Guest';
-		// }
-		// var player = Crafty.storage('player');//load player object  ?
 
-		this.game = Crafty.storage('game');//store game progress, unlocked things, etc...
+		//store game progress, unlocked things, etc...
+		this.game = Crafty.storage('game');
 		if(this.game == null){
 			this.game = this.newGame();
 		}
@@ -44,10 +41,13 @@ Crafty.c("Model",{
 			if(e.keyCode === Crafty.keys.G){
 				this.save();
 				console.log('game saved');
-			} else if(e.keyCode === Crafty.keys.H){
+			} else if(e.keyCode === Crafty.keys.N){
 				this.game = this.newGame();
 				this.save();
-				console.log('new game started');
+				console.log('new game obj inited');
+			} else if(e.keyCode === Crafty.keys.M){
+				this.addMoney(5000);
+				console.log('added 50k monies');
 			} else if(e.keyCode === Crafty.keys.P){
 				if(Crafty.isPaused()) {
 					Crafty.trigger("HideText");//FIXME would hide any text... not great solution?
@@ -64,14 +64,28 @@ Crafty.c("Model",{
 	newGame:function(){
 		return {
 				score: 0,
-				money: 0,
+				money: 1000,
 				player: playerInit(),
 				levels: null,
+				inventory:{
+					weapons:[
+						Crafty.e("Weapon").Weapon(allTheWeapons.AutoLaser),
+						Crafty.e("Weapon").Weapon(allTheWeapons.Laser_Wave),
+					],
+					bigWeapons:[
+						Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb2),
+					],
+					ships:[
+						'ship1',
+						'ship2',
+					],
+					pilots:[
+						'pilot1',
+						'pilot2',
+					],
+				},
 			};
 	},
-	// Model:function(){
-	// 	var this.game = null;
-	// },
 	save:function(){
 		Crafty.storage('game',this.game);
 	},
@@ -92,11 +106,20 @@ Crafty.c("Model",{
 	getMoney:function(){
 		return this.game.money;
 	},
-	addMoney:function(dollas){
-		return this.game.money += dollas;
+	canAfford:function(dollars){
+		return this.game.money >= dollars;
 	},
-	subMoney:function(dollas){
-		return this.game.money -= dollas;
+	addMoney:function(dollars){
+		return this.game.money += dollars;
+	},
+	subtractMoney:function(dollars){
+		if (dollars > this.game.money) {
+			// Crafty.trigger("TempShowText","Insufficient Funds");
+			console.log('Insufficient Funds');
+			return false;
+		}
+		this.game.money -= dollars;
+		return true
 	},
 	hasPlayerFocus:function(){
 		return this.playerCanShoot && !Crafty.isPaused();
@@ -112,9 +135,49 @@ Crafty.c("Model",{
 	getPlayer:function(){
 		return this.game.player;
 	},
-	swapWeapon:function(newWeapon, index){
-		var oldWeapon = this.game.player.weapons[index];
-		this.game.player.weapons[index] = newWeapon;
-		return oldWeapon;
+	equipItem:function(type, invSlot, position){
+		// select the items to swap (from player to inventory)
+		var temp;
+		switch(type){
+			case 'weapons':
+				temp = this.game.player.weapons[position];
+				this.game.player.weapons[position] = this.game.inventory.weapons[invSlot];
+				this.game.inventory.weapons[invSlot] = temp;
+				break;
+			case 'ships':
+				temp = this.game.player.ship;
+				this.game.player.ship = this.game.inventory.ships[invSlot];
+				this.game.inventory.ships[invSlot] = temp;
+				break;
+			case 'pilots':
+				temp = this.game.player.pilot;
+				this.game.player.pilot = this.game.inventory.pilots[invSlot];
+				this.game.inventory.pilots[invSlot] = temp;
+				break;
+			case 'bigWeapons':
+				temp = this.game.player.bigWeapon;
+				this.game.player.bigWeapon = this.game.inventory.bigWeapons[invSlot];
+				this.game.inventory.bigWeapons[invSlot] = temp;
+				break;
+			default: 
+				console.error("you should not have come this way... Ring B-error");
+				return false;
+		}
+
+		// var oldItem = currentItem;
+		// this.game.player.weapons[index] = newWeapon;
+
+		return true;
+	},
+	acquireItem:function(type, item){
+		this.game.inventory[type].push(item);
+		//FIXME if too many items make player sell/drop
+	},
+	getLastItemIndex:function(type){
+		return this.game.inventory[type].length - 1;
+		//FIXME if too many items make player sell/drop
+	},
+	getInventory:function(type){
+		return (type == null)? this.game.inventory : this.game.inventory[type];
 	},
 });

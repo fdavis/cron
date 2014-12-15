@@ -32,7 +32,7 @@ Crafty.c("Player",{
                 Crafty.e("Weapon").Weapon(allTheWeapons.Laser1),
                 Crafty.e("Weapon").Weapon(allTheWeapons.Laser1)
             ];
-        this.bigWeapon = Crafty.e("Weapon").Weapon(allTheWeapons.Bomb);
+        this.bigWeapon = Crafty.e("Weapon").Weapon(allTheBigWeapons.Bomb);
         this.shieldHandle = Crafty.e("2D,Canvas,player_shield").origin('center');
         this.requires("2D,Canvas,"+this.ship+",Fourway,Keyboard,Mouse,Collision,Flicker")
         .fourway(10)
@@ -70,7 +70,7 @@ Crafty.c("Player",{
                 if(this.bigWeapon.canBeFired == true){
                     //if no ammo then quit now
                     if(this.bigWeapon.has("BallisticWeapon") && this.bigWeapon.ammo == 0) {
-                        Crafty.trigger("TempShowText",this.bigWeapon.statBanner + " is out of ammo!");
+                        Crafty.trigger("TempShowText",this.bigWeapon.name + " is out of ammo!");
                         return;
                     }
                     // WARNING: this does not call canvasMouseDown event, will break auto fire if it does
@@ -90,7 +90,7 @@ Crafty.c("Player",{
             if(this.weapons[this.currentWeapon].canBeFired == true) {
                 //if no ammo then quit now
                 if(this.weapons[this.currentWeapon].has("BallisticWeapon") && this.weapons[this.currentWeapon].ammo == 0) {
-                    Crafty.trigger("TempShowText",this.weapons[this.currentWeapon].statBanner + " is out of ammo!");
+                    Crafty.trigger("TempShowText",this.weapons[this.currentWeapon].name + " is out of ammo!");
                     return;
                 }
                 // if auto then call heat weapon
@@ -138,7 +138,7 @@ Crafty.c("Player",{
                 }
             }
             // handle cooling other auto weapons (if any)
-            for(var i = 0; i < this.maxWeapon && this.maxWeapon > this.weapons.length; ++i) {
+            for(var i = 0; i < this.maxWeapon; ++i) {
                 if(i == this.currentWeapon) continue;
                 if(true == this.weapons[i].isAuto && frame.frame % this.weapons[i].fireRate == 0){
                     this.coolWeapon(this.weapons[i]);
@@ -279,7 +279,7 @@ Crafty.c("Player",{
             }
         }
 
-        var bullet = Crafty.e(weapon.name,"PlayerBullet")//FIXME call bullet constructor
+        var bullet = Crafty.e(weapon.bulletName,"PlayerBullet")//FIXME call bullet constructor
         .Bullet({
             playerID: this[0],
             dmg: weapon.dmg,
@@ -340,16 +340,17 @@ Crafty.c("Player",{
     Player:function(data){
         if(data == null) return;
         keys = Object.keys(data);
-        for(var x = 0; x < keys.length; ++x){
+        for(var keyIndex = 0; keyIndex < keys.length; ++keyIndex){
             // need crafty entity clone of weapons
-            if(keys[x] == 'weapons') {
-                this[keys[x]] = []; //clear the array
-                for(var i = 0; i < data[keys[x]].length; ++i){
-                    this[keys[x]].push(Crafty.e("Weapon").Weapon(data[keys[x]][i]));
+            if(keys[keyIndex] == 'weapons') {
+                this[keys[keyIndex]] = []; //clear the array
+                for(var dataIndex = 0; dataIndex < data[keys[keyIndex]].length; ++dataIndex){
+                    this[keys[keyIndex]].push(Crafty.e("Weapon").Weapon(data[keys[keyIndex]][dataIndex]));
                 }
-
+            } else if(keys[keyIndex] == 'bigWeapon') {
+                this.bigWeapon = Crafty.e("Weapon").Weapon(data[keys[keyIndex]]);
             } else {
-                this[keys[x]] = data[keys[x]];
+                this[keys[keyIndex]] = data[keys[keyIndex]];
             }
         }
         this.reset();

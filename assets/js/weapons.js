@@ -2,7 +2,7 @@
 
 // Defaults w/ constructors for Weapons
 Crafty.c("Weapon",{
-    name:"Weapon1", //default is laser1, but should this be required field?
+    bulletName:"Weapon1", //default is laser1, but should this be required field?
     canBeFired: true,
     isAuto: false,
     dmg:1,
@@ -18,7 +18,6 @@ Crafty.c("Weapon",{
     heatingRate: 4,
     hasAmmo:false,
     ammo:10,
-    statBanner:"Laser",
     Weapon:function(args){
         for (var k in args){
             if (args.hasOwnProperty(k) && k != '__c') {
@@ -26,8 +25,6 @@ Crafty.c("Weapon",{
             }
         }
         if(this.hasAmmo) this.requires("BallisticWeapon");
-        console.log('in weapon, hasAmmo:' + this.hasAmmo);
-        console.log(this.load);
         return this;
     }
 });
@@ -49,11 +46,12 @@ Crafty.c("BallisticWeapon",{
 // Container for all the weapon datas
 var allTheWeapons = {
     AutoLaser:{
-        name:"AutoLaser",
+        name:"Pulse Laser",
+        bulletName:"AutoLaser",
         canBeFired: true,
         isAuto: true,
         coolingRate: 1,
-        heatingRate: 4,
+        heatingRate: 2,
         heat: 0,
         dmg:1,
         speed:25,
@@ -62,10 +60,10 @@ var allTheWeapons = {
         fireRate:5,
         percent:0,
         cost:80,
-        statBanner:"AutoLaser"
     },
     MissileLauncher1:{
-        name:"MissileLauncher1",
+        name:"Missile Launcher",
+        bulletName:"MissileLauncher1",
         canBeFired: true,
         isAuto: false,
         dmg:3,
@@ -78,10 +76,10 @@ var allTheWeapons = {
         hasAmmo:true,
         ammo:10,
         cost:75,
-        statBanner:"Missile Launcher"
     },
     Laser_Wave:{
-        name:"Laser_Wave",
+        name:"Laser Wave",
+        bulletName:"Laser_Wave",
         canBeFired: true,
         isAuto: false,
         dmg:2,
@@ -93,10 +91,10 @@ var allTheWeapons = {
         fireInterval:22,
         percent:100,
         cost:105,
-        statBanner:"Laser Wave"
     },
     Laser1:{
-        name:"Weapon1",
+        name:"Simple Laser",
+        bulletName:"Weapon1",
         canBeFired: true,
         isAuto: false,
         dmg:1,
@@ -108,10 +106,14 @@ var allTheWeapons = {
         fireInterval:7,
         percent:100,
         cost:30,
-        statBanner:"Laser"
    },
+};
+
+
+var allTheBigWeapons = {
    Bomb:{
         name:"Bomb",
+        bulletName:"Bomb",
         canBeFired: true,
         isAuto: false,
         dmg:10,
@@ -121,9 +123,24 @@ var allTheWeapons = {
         cooldownCounter:120,
         fireInterval:120,
         hasAmmo:true,
+        ammo:10,
+        percent:100,
+        cost:500,
+   },
+   Bomb2:{
+        name:"Fast Bomb",
+        bulletName:"Bomb",
+        canBeFired: true,
+        isAuto: false,
+        dmg:10,
+        speed:2,
+        speedMax:20,
+        accel:0.4,
+        cooldownCounter:120,
+        fireInterval:120,
+        hasAmmo:true,
         ammo:50,
         percent:100,
         cost:500,
-        statBanner:"Bomb"
-   }
-}
+   },
+};

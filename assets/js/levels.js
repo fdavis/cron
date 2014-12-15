@@ -25,6 +25,9 @@ levelData = {
                 freq: 180,
             },
         },
+        goals: {
+            score: 500,
+        },
     },
     level2: {
         name: "Level Two",
@@ -55,6 +58,9 @@ levelData = {
                     shotFreq: 5,
                 },
             },
+        },
+        goals: {
+            score: 1000,
         },
     }
 };
@@ -237,22 +243,77 @@ Crafty.scene("LoadoutSelector",
 
         $('#loadoutSelectionDiv').show();
 
-        // FIXME this will need to do a lot more ...
-        // like sorts, select the type, and a all the loadout UI things and such
-        var myStoreDiv = $('#loadoutStoreButtonDiv').empty();
+        // should only be populated after player ship changes, ie on load, or equip ship
+        var myStoreDiv = $('#loadoutTypeSelectButtonDiv').empty();
 
         // setup store purchase buttons
-        myStoreDiv.append('<p><input type="button" id="loadoutStoreButton1" value="Purchase AutoLaser"/></p>');
-        $('#loadoutStoreButton1').click(function(){
-            loadout.purchase('AutoLaser');
+        myStoreDiv.append('<p><input type="button" id="typeSelectButton1" value="Select Weapon Slot 1"/></p>');
+        $('#typeSelectButton1').click(function(){
+            console.log('select weapon slot 1');
+            Crafty.trigger("ItemUpdate",{type:'weapons',position:0});
+        });
+        myStoreDiv.append('<p><input type="button" id="typeSelectButton2" value="Select Weapon Slot 2"/></p>');
+        $('#typeSelectButton2').click(function(){
+            console.log('select weapon slot 2');
+            Crafty.trigger("ItemUpdate",{type:'weapons',position:1});
+        });
+        myStoreDiv.append('<p><input type="button" id="typeSelectButton3" value="Select Weapon Slot 3"/></p>');
+        $('#typeSelectButton3').click(function(){
+            console.log('select weapon slot 3');
+            Crafty.trigger("ItemUpdate",{type:'weapons',position:2});
+        });
+        myStoreDiv.append('<p><input type="button" id="typeSelectButton4" value="Select Big Weapon"/></p>');
+        $('#typeSelectButton4').click(function(){
+            console.log('select bigweaopn');
+            Crafty.trigger("ItemUpdate",{type:'bigWeapons'});
         });
 
-        // setup inventory equip buttons
-        var invDiv = $('#loadoutInvButtonDiv').empty();
-        invDiv.append('<p><input type="button" id="loadoutInvButton1" value="Equip AutoLaser"/></p>');
-        $('#loadoutInvButton1').click(function(){
-            loadout.equip(1,'weapon');
+        // should be used to display info and things... probably doesn't need auto gen html
+        // just comeup with a layout and change text/highlights on the fly
+        var myRolloverDiv = $('#loadoutDisplayDiv').empty();
+        // show me the money
+        myRolloverDiv.append('<p id="theMoney"></p>');
+        $('#theMoney').text("Money:" + model.getMoney());
+
+        //Bind ItemUpdate Event
+        Crafty.bind("ItemUpdate",function(data){
+            // FIXME this will need to do a lot more ...
+            // like sorts, select the type, and a all the loadout UI things and such
+            var myStoreDiv = $('#loadoutStoreButtonDiv').empty();
+            var type = data.type;
+            var position = data.position;
+            var myStoreItems = loadout.getStoreInventory(type);
+            var storeItemKeys = Object.keys(myStoreItems);
+
+            // setup store purchase buttons
+            for(var i = 0; i < storeItemKeys.length; ++i){
+                myStoreDiv.append('<p><input type="button" id="loadoutStoreButton' + i + '" value="Purchase '
+                    + myStoreItems[storeItemKeys[i]].name + '"/></p>');
+                // add closure around click function i so the click function gets the value from the current iteration of the loop every loop
+                (function(i){
+                    $('#loadoutStoreButton' + i).click(function(){
+                        loadout.purchase(type,storeItemKeys[i],position);
+                    });
+                })(i);
+            }
+
+            // setup inventory equip buttons
+            var invDiv = $('#loadoutInvButtonDiv').empty();
+            var myItems = model.getInventory(type);
+            for(var i = 0; i < myItems.length; ++i){
+                invDiv.append('<p><input type="button" id="loadoutInvButton' + i + '" value="Equip '
+                    + myItems[i].name + '"/></p>');
+                // add closure around click function i so the click function gets the value from the current iteration of the loop every loop
+                (function(i){
+                    $('#loadoutInvButton' + i).click(function(){
+                        loadout.equipItem(type,i,position);
+                    });
+                })(i);
+            }
+
         });
+        Crafty.trigger("ItemUpdate",{type:'weapons',position:1});
+
     },
 
     //deinit loadout menu
@@ -263,7 +324,6 @@ Crafty.scene("LoadoutSelector",
 
 //Level 1 Scene
 Crafty.scene("Level",function(myData){
-    console.log(myData);
     //Display interface
     $('#interface').show();
     //Setup background of level
@@ -313,7 +373,6 @@ Crafty.scene("Level",function(myData){
     };
     //Create the player
     var player = Crafty.e("Player").Player(model.getPlayer());
-    console.log(player);
     //Bind Gameloop to the Scene
     this.bind("EnterFrame",function(frame){
         //Trigger Event to display enemies
@@ -332,7 +391,7 @@ Crafty.scene("Level",function(myData){
             if (false == player.weapons[i].isAuto){
                 player.weapons[i].percent = Math.round(player.weapons[i].cooldownCounter / player.weapons[i].fireInterval * 100);
                 infos.weapon[i].text(
-                    player.weapons[i].statBanner + " " +
+                    player.weapons[i].name + " " +
                     (
                         player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
                         (player.weapons[i].percent >= 100 ? "Ready" : "Charge")
@@ -341,7 +400,7 @@ Crafty.scene("Level",function(myData){
             } else{
                 player.weapons[i].percent = Math.round(player.weapons[i].heat);
                 infos.weapon[i].text(
-                    player.weapons[i].statBanner + " " +
+                    player.weapons[i].name + " " +
                     (
                         player.weapons[i].has("BallisticWeapon")? "(" + player.weapons[i].ammo + ") " :
                         (player.weapons[i].percent >= 100 ? "Cooling" : "Ready")
@@ -359,7 +418,7 @@ Crafty.scene("Level",function(myData){
         }
         player.bigWeapon.percent = Math.round(player.bigWeapon.cooldownCounter / player.bigWeapon.fireInterval * 100);
         infos.bigWeapon.text(
-            player.bigWeapon.statBanner + " " +
+            player.bigWeapon.name + " " +
             (
                 player.bigWeapon.has("BallisticWeapon")? "(" + player.bigWeapon.ammo + ") " :
                 (player.bigWeapon.percent >= 100 ? "Cooling" : "Ready")
@@ -404,35 +463,19 @@ Crafty.scene("Level",function(myData){
     });
 
     //Bind global Event Show Text easeInExpo chosen because I'm trying to get more time where the text is there so its more readable
-    Crafty.bind("ShowText",function(text){
-        infos.alert.text(text).show().effect('pulsate','easeInExpo',500)
-    });
-    Crafty.bind("TempShowText",function(text){
-        // infos.alert.text(obj.text).show().effect('pulsate','easeInExpo',500,obj.func);
-        infos.alert.text(text).show().effect('pulsate','easeInExpo',500,function(){
-            Crafty.trigger("HideText");
-        });
-    });
-    Crafty.bind("HideText",function(){
-        infos.alert.text("").hide();
-    });
-    //Global Event for Game Over
-    Crafty.bind("GameOver",function(score){
-        Crafty.trigger("ShowText","Game Over!");
-        Crafty.audio.stop();
-        Crafty.audio.play("gameover",-1);
-    });
+    
     //Play background music and repeat
     // Crafty.audio.play("space",-1);
     // Crafty.trigger("UpdateStats");
 
     // deinit Level scene
 }, function(){
-    Crafty.unbind('ShowText');
-    Crafty.unbind('TempShowText');
-    Crafty.unbind('HideText');
-    Crafty.unbind('GameOver');
+    // Crafty.unbind('ShowText');
+    // Crafty.unbind('TempShowText');
+    // Crafty.unbind('HideText');
+    // Crafty.unbind('GameOver');
     Crafty.unbind('mousedown');
     Crafty.unbind('mouseup');
     Crafty.unbind('EnterFrame');
 });
+

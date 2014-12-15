@@ -16,5 +16,25 @@ $(function(){
     Crafty.canvas._canvas.style.zIndex = '1';
     //play the loading scene
     Crafty.scene("Loading");
+
+    //fixme this may cause a race condition for different .alert divs if we have multiple... ?
+    Crafty.bind("ShowText",function(text){
+        $('.alert').text(text).show().effect('pulsate','easeInExpo',500)
+    });
+    Crafty.bind("TempShowText",function(text){
+        // infos.alert.text(obj.text).show().effect('pulsate','easeInExpo',500,obj.func);
+        $('.alert').text(text).show().effect('pulsate','easeInExpo',500,function(){
+            Crafty.trigger("HideText");
+        });
+    });
+    Crafty.bind("HideText",function(){
+        $('.alert').text("").hide();
+    });
+    //Global Event for Game Over
+    Crafty.bind("GameOver",function(score){
+        Crafty.trigger("ShowText","Game Over!");
+        Crafty.audio.stop();
+        Crafty.audio.play("gameover",-1);
+    });
 });
 

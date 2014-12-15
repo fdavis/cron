@@ -15,40 +15,49 @@ Crafty.c("Loadout",{
 		// FIXME I'm storing position because I'm not sure if javascript can preserve object order
 		// writing this out I'm realizing that this is a poor way to store this I think because two will conflict
 		// this needs more thought obviously...
-		this.inventory = [ allTheWeapons.AutoLaser, allTheWeapons.MissileLauncher1, ];
+		this.inventory = this.model.getInventory(); //FIXME do not get anything from the model by reference
 
 		//again I'm just doing weapons for something to work with...
-		this.store = this.getStoreInventory();
+		this.storeInventory = this.loadStoreInventory();
 	},
-	getStoreInventory:function(){
+	loadStoreInventory:function(){
 		// this should interact with progress in order to say what things are unlocked
-		return allTheWeapons;
+		return {
+			weapons: allTheWeapons,
+			bigWeapons: allTheBigWeapons,
+			pilots: 'pilot1',
+			ships: 'ship1',
+		};
 	},
-	getStore:function(type){
-		//fixme this should depend on the type
-		return this.store;
+	getStoreInventory:function(type){
+		return this.storeInventory[type];
 	},
 	getInventory:function(type){
-		//fixme this should depend on the type
-		return this.inventory;
+		return this.inventory[type];
 	},
-	purchase:function(thing, type){
-		var item = this.store[thing];
-		model.subMoney(item.cost); // check that we have enough money
-		this.addItem(thing, type);
-		this.equip(this.inventory.length - 1);
-		return true; //fixme should return false or reason why failed when failed?
-	},
-	equip:function(arrayIndex, type){
-		var oldWeapon = model.swapWeapon(this.inventory[arrayIndex], 1);
-		this.inventory[arrayIndex] = oldWeapon;
-		// var item = jQuery.extend({}, this.inventory[thing]);
-		//herpus derpus
-	},
-	addItem:function(thing, type){
-		newItem = jQuery.extend({}, allTheWeapons[thing]);
-		this.inventory.push(newItem);
-	},
+	purchase:function(type, storeItem, position){
+		// can buy?
+		var item = this.storeInventory[type][storeItem];
+		var price = item.cost;
+		if(!model.canAfford(price)){
+			console.log('you cannot afford that schwag')
+			return false;
+		}
+		// purchase
+		model.subtractMoney(price);
+		this.addItem(type, item);
+		// call equipItem
+		model.equipItem(type, model.getLastItemIndex(type), position);
 
-//var newObject = jQuery.extend({}, oldObject);
+		//FIXME force user to remove/sell an item if item.type.length > item.max.length
+
+		return true;
+	},
+	equipItem:function(type, index, position){
+		model.equipItem(type, index, position);
+	},
+	addItem:function(type, item){
+		newItem = jQuery.extend({}, item);
+		model.acquireItem(type, newItem);
+	},
 });

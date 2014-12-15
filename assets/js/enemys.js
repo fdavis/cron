@@ -94,23 +94,16 @@ Crafty.c("Shooter", {
         // moved to enemy for now ... need to refactor some how
         this.bind("Shoot",function(speed){
             var dir = dir || {x: 0, y: -1};
-            var weapon = {
-                    name:"Weapon1",
-                    dmg:1,
-                    speed:speed || 15,
-                    speedMax:speed || 15,
-                    accel:0
-                };
-            var bullet = Crafty.e(weapon.name,"EnemyBullet")
+            var bullet = Crafty.e(this.weapon.bulletName,"EnemyBullet")
             .Bullet({
                 playerID: this[0],
-                dmg: weapon.dmg,
-                xspeed: weapon.speed * dir.x,
-                xaccel: weapon.accel * dir.x,
-                xmax: weapon.speedMax * dir.x,
-                yspeed: weapon.speed * dir.y,
-                yaccel: weapon.accel * dir.y,
-                ymax: weapon.speedMax * dir.y
+                dmg: this.weapon.dmg,
+                xspeed: this.weapon.speed * dir.x,
+                xaccel: this.weapon.accel * dir.x,
+                xmax: this.weapon.speedMax * dir.x,
+                yspeed: this.weapon.speed * dir.y,
+                yaccel: this.weapon.accel * dir.y,
+                ymax: this.weapon.speedMax * dir.y
             });
             // FIXME make these adjustments more generic so they will fit well on any ship
             // May take ship by ship tinkering :(
